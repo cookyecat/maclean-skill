@@ -1,0 +1,40 @@
+name: Research v0.3 evidence contract safety
+on:
+  push:
+    branches:
+      - 'research/decision-engine-evidence-v0.3'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v0.3/**'
+      - '.github/workflows/research-evidence-v03.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Syntax check
+        run: python3 -m compileall -q research/decision-engine-v0.3
+      - name: Independent evidence and strategy rejection tests
+        working-directory: research/decision-engine-v0.3
+        run: python3 -m unittest -v test_evidence_v03 test_strategy_v03
+      - name: Verify synthetic only experiment declarations
+        working-directory: research/decision-engine-v0.3
+        run: |
+          python3 - <<'PY'
+          import json
+          s=json.load(open('ladder_cases.synthetic.json'))
+          assert s['is_synthetic'] is True
+          assert s['is_gold_labeled'] is False
+          assert len(s['cases'])==9
+          assert all(c['attestation_type'] != 'INDEPENDENT_LOCAL_SENSOR' for c in s['cases'])
+          assert all('path' not in c and 'pid' not in c for c in s['cases'])
+          print('9 scenarios remain synthetic and devoid of local paths')
+          PY
+      - name: No real cleanup or model calls in CI
+        run: echo "Fixture-only; no host user caches, no API secrets, no --apply."
