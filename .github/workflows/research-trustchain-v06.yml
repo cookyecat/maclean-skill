@@ -1,0 +1,39 @@
+name: Research v0.6 Evidence Trust and Client Scope
+on:
+  push:
+    branches:
+      - 'research/decision-engine-trustchain-v0.6'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v0.6/**'
+      - '.github/workflows/research-trustchain-v06.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Python static checks
+        run: python3 -m compileall -q research/decision-engine-v0.6
+      - name: Run all privacy and evidence integrity regressions
+        working-directory: research/decision-engine-v0.6
+        run: python3 -m unittest -v test_trustchain_v06 test_client_guard_v06
+      - name: Research never grants cleanup
+        working-directory: research/decision-engine-v0.6
+        run: |
+          python3 - <<'PY'
+          from evidence_envelope import fixture_example
+          record=fixture_example()
+          assert record['deletion_authorized'] is False
+          assert record['executable_plan'] is False
+          assert record['e3_fully_proven'] is False
+          assert record['source_identity_is_cryptographically_authenticated'] is False
+          print('All trust-chain gates remain fail-closed')
+          PY
+      - name: No installs or real cache access in CI
+        run: echo "Offline fixture/unit tests only; pinned macOS CLI native E2 is correctly skipped without its private disposable test root."
