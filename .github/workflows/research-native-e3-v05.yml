@@ -1,0 +1,44 @@
+name: Research v0.5 Native CLI and Partial E3 Safety
+on:
+  push:
+    branches:
+      - 'research/decision-engine-native-e3-v0.5'
+    paths:
+      - 'research/decision-engine-v0.5/**'
+      - '.github/workflows/research-native-e3-v05.yml'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v0.5/**'
+      - '.github/workflows/research-native-e3-v05.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Static source check
+        run: python3 -m compileall -q research/decision-engine-v0.5
+      - name: Negative evidence and privacy regressions
+        working-directory: research/decision-engine-v0.5
+        run: python3 -m unittest -v test_native_e3_v05
+      - name: Verify E3 report can never authorize deletion
+        working-directory: research/decision-engine-v0.5
+        run: |
+          python3 - <<'PY'
+          from e3_failclosed_gate import classify_one
+          for kind in ('puppeteer','playwright'):
+              for state in ('ABSENT','OPEN_REFERENCE_OBSERVED',
+                            'NOT_OBSERVED_IN_SHALLOW_SCAN','INCONCLUSIVE','DENIED'):
+                  r=classify_one(kind, {'state':state})
+                  assert not r['safe_to_delete_inferred']
+                  assert not r['native_cleanup_allowed']
+                  assert not r['user_approval_requested']
+          print('10 status combinations remain fail-closed')
+          PY
+      - name: CI never downloads npm or browser binaries
+        run: echo 'Offline synthetic regression only; real publisher-native E2 is a separate Mac-only disposable verification.'
