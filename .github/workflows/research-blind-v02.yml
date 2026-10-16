@@ -1,0 +1,27 @@
+name: Research v0.2 privacy and blind-evaluation checks
+on:
+  push:
+    branches:
+      - 'research/decision-engine-blind-v0.2'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v0.2/**'
+      - '.github/workflows/research-blind-v02.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-research-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Syntax check
+        run: python3 -m compileall -q research/decision-engine-v0.2
+      - name: Synthetic privacy and model-comparison unit checks
+        working-directory: research/decision-engine-v0.2
+        run: python3 -m unittest -v test_blind_v02
+      - name: No live provider or cleanup action in CI
+        run: echo "Research only; no real Mac triage; no provider keys; no --apply."
