@@ -111,4 +111,32 @@ class ClientLinkTests(unittest.TestCase):
             with self.assertRaises(LinkDenied):
                 scan_fixture_links(r,expected_clients={"../../../anything"})
 
+    def test_symlinked_client_parent_denied_before_child_access(self):
+        t,r,p=self.fixture()
+        with t:
+            # Replace only the synthetic root's clients directory.
+            import shutil
+            shutil.rmtree(r/"clients")
+            (r/"clients").symlink_to(pathlib.Path.home(),target_is_directory=True)
+            with self.assertRaises(LinkDenied):
+                scan_fixture_links(r,expected_clients={"client-ALPHA"})
+
+    def test_symlinked_browser_cache_parent_denied(self):
+        t,r,p=self.fixture()
+        with t:
+            import shutil
+            shutil.rmtree(r/"browser-cache")
+            (r/"browser-cache").symlink_to(pathlib.Path.home(),target_is_directory=True)
+            with self.assertRaises(LinkDenied):
+                scan_fixture_links(r,expected_clients={"client-ALPHA"})
+
+    def test_symlinked_links_directory_denied(self):
+        t,r,p=self.fixture()
+        with t:
+            import shutil
+            shutil.rmtree(r/"browser-cache"/".links")
+            (r/"browser-cache"/".links").symlink_to(pathlib.Path.home(),target_is_directory=True)
+            with self.assertRaises(LinkDenied):
+                scan_fixture_links(r,expected_clients={"client-ALPHA"})
+
 if __name__=="__main__":unittest.main(verbosity=2)
