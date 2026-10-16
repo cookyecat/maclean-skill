@@ -25,7 +25,7 @@ class V11(unittest.TestCase):
         self.plan=self.home/"draft.json"
         self.approval=self.home/"approval.json"
         def resolve(info,home):
-            if info["path"] not in {self.rows[0]["path"],self.rows[1]["path"]}:
+            if info["path"] not in {self.rows[0]["path"],self.rows[1]["path"],"~/.cache/uv"}:
                 raise ex.Denied("not fixture path")
             return home/info["path"][2:]
         def target_type(path):
