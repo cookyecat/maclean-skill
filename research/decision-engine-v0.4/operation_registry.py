@@ -7,6 +7,8 @@ behavior and from current target-usage evidence.
 """
 from __future__ import annotations
 from dataclasses import dataclass
+import hashlib
+import json
 from typing import Literal
 
 Scope = Literal["SCOPED_BUILD", "CACHE_ALL", "UNUSED_DYNAMIC", "BROWSERS_ALL",
@@ -89,6 +91,20 @@ def validate_graph(graph: dict) -> None:
             raise ContractError("client reference list invalid")
         if any(not safe_ident(s) for s in refs):
             raise ContractError("client dependency identity invalid")
+        if any(s not in installed for s in refs):
+            raise ContractError("client refers to unavailable fixture browser build")
+    computed_unused=sorted(set(installed)-set().union(*(set(v) for v in clients.values())))
+    if "synthetic_orphan_ids" in graph and graph["synthetic_orphan_ids"] != computed_unused:
+        raise ContractError("forged synthetic orphan IDs")
+
+def graph_fingerprint(graph: dict) -> str:
+    """Deterministic synthetic graph digest; NOT an authentication signature."""
+    validate_graph(graph)
+    significant={k:graph[k] for k in ("schema","synthetic","complete_client_universe",
+                                      "app_family","installed_browsers","clients")}
+    blob=json.dumps(significant,sort_keys=True,separators=(",",":")).encode()
+    return hashlib.sha256(blob).hexdigest()
+
 
 def simulated_scope(operation: Operation, graph: dict, requested: set[str],
                     *, target: str | None = None, client: str | None = None) -> tuple[set[str] | None, list[str]]:
@@ -126,6 +142,8 @@ def assess(operation_id: str, graph: dict, approved_targets: list[str],
         raise ContractError("cross-application cleanup method not allowed for fixture graph")
     allow=set(approved_targets)
     installed=set(graph["installed_browsers"])
+    if not isinstance(approved_targets,list) or not approved_targets:
+        raise ContractError("nonempty approved target list required")
     if len(allow)!=len(approved_targets) or not allow.issubset(installed):
         raise ContractError("approval set invalid or not entirely installed")
     active=set(active_targets or [])
@@ -152,6 +170,9 @@ def assess(operation_id: str, graph: dict, approved_targets: list[str],
     # Do not turn synthetic fixture scope equality into permission.
     return {
         "operation_id":op.op_id,"publisher_documented":True,
+        "graph_fingerprint":graph_fingerprint(graph),
+        "requested_approved_ids":sorted(allow),
+        "target_argument":target,"client_argument":client,
         "scope_semantics":op.scope,
         "synthetic_effect_size":len(effect) if effect is not None else None,
         "synthetic_effect_ids":sorted(effect) if effect is not None else None,
@@ -162,3 +183,27 @@ def assess(operation_id: str, graph: dict, approved_targets: list[str],
         "production_eligible":False,
         "qualification":"Synthetic fixture client universe is not evidence about real host clients",
     }
+
+def revalidate_synthetic_preview(previous: dict, current_graph: dict,
+                                 *, active_targets: list[str] | None = None,
+                                 protected_targets: list[str] | None = None) -> dict:
+    """Re-evaluate research preview against fresh fixture graph; never apply."""
+    validate_graph(current_graph)
+    required=("operation_id","requested_approved_ids","graph_fingerprint",
+              "target_argument","client_argument")
+    if any(k not in previous for k in required) or previous.get("research_only") is not True:
+        raise ContractError("untrusted or incomplete research preview")
+    current=assess(previous["operation_id"],current_graph,previous["requested_approved_ids"],
+                   target=previous["target_argument"],client=previous["client_argument"],
+                   active_targets=active_targets,protected_targets=protected_targets)
+    drift=current["graph_fingerprint"] != previous["graph_fingerprint"]
+    flags=set(current["flags"])
+    if drift:
+        flags.add("GRAPH_CHANGED_REVIEW_REQUIRED")
+    if current["synthetic_effect_ids"] != previous.get("synthetic_effect_ids"):
+        flags.add("TOUCHED_SET_CHANGED_REVIEW_REQUIRED")
+    current["flags"]=sorted(flags)
+    current["snapshot_changed"]=drift
+    current["deletion_authorized"]=False
+    current["production_eligible"]=False
+    return current
