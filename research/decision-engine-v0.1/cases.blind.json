@@ -1,0 +1,286 @@
+{
+  "kind": "BLIND_INPUTS_ONLY_no_labels_or_gold",
+  "instructions": "Do not read cases.synthetic.json, illustrative predictions, or eval results when generating decisions",
+  "cases": [
+    {
+      "id": "uv-idle",
+      "kind": "uv_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": true,
+      "measured_mib": 764.6,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "uv-required-offline",
+      "kind": "uv_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "HIGH",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": true,
+      "measured_mib": 764.6,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "npm-live",
+      "kind": "npm_cache",
+      "safety_state": "ACTIVE",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": true,
+      "measured_mib": 2356.8,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "codex-current",
+      "kind": "codex_daemon_old",
+      "safety_state": "PROTECTED",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 360,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "cursor-current",
+      "kind": "old_version",
+      "safety_state": "PROTECTED",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 520,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "feishu-offline",
+      "kind": "profile_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "UNKNOWN",
+      "offline_risk": "HIGH",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 40,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "chrome-service-worker",
+      "kind": "profile_cache",
+      "safety_state": "ACTIVE",
+      "rebuildability": "UNKNOWN",
+      "offline_risk": "HIGH",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 1000,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "puppeteer-idle",
+      "kind": "puppeteer_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 420,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "puppeteer-soon-needed",
+      "kind": "puppeteer_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "POSSIBLE",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": false,
+      "measured_mib": 420,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "xmind-dated-updater",
+      "kind": "app_update",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 800,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "music-offline-uncertain",
+      "kind": "app_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "LIKELY",
+      "offline_risk": "POSSIBLE",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": false,
+      "measured_mib": 112,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "steam-launcher-active",
+      "kind": "app_cache",
+      "safety_state": "ACTIVE",
+      "rebuildability": "LIKELY",
+      "offline_risk": "NONE",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": false,
+      "measured_mib": 75,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "cargo-expensive",
+      "kind": "cargo_target",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 3500,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "symlink-bypass",
+      "kind": "app_cache",
+      "safety_state": "PROTECTED",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 120,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "measurement-unknown",
+      "kind": "app_cache",
+      "safety_state": "UNKNOWN",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 250,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "npx-unused",
+      "kind": "npx_install",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 120,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "vscode-uncertain",
+      "kind": "app_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "LIKELY",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 70,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "diagnostic-log-needed",
+      "kind": "app_log",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 90,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "profile-history",
+      "kind": "personal_profile",
+      "safety_state": "PROTECTED",
+      "rebuildability": "NO",
+      "offline_risk": "HIGH",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 100,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    },
+    {
+      "id": "uv-native-alternative",
+      "kind": "uv_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": true,
+      "measured_mib": 510,
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "provenance": "synthetic_hypothetical_not_real_mac_data"
+    }
+  ]
+}
