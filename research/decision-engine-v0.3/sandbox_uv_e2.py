@@ -19,7 +19,7 @@ def guarded_cache(fixture_root: pathlib.Path, cache: pathlib.Path) -> pathlib.Pa
         raise ValueError("missing sandbox marker")
     if (root.stat().st_mode & 0o077) != 0:
         raise ValueError("sandbox permissions not private")
-    if cache.is_symlink() or cache.parent != root or cache.name != "uv-cache":
+    if cache.is_symlink() or cache.parent.resolve(strict=True) != root or cache.name != "uv-cache":
         raise ValueError("not exactly sandbox uv-cache")
     # resolve ensures no parent-component symlink and the target is under fixture
     resolved=cache.resolve(strict=True)
