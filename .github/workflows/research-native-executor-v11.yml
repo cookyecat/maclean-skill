@@ -1,0 +1,27 @@
+name: Research Native Executor v1.1 - Exact Approval and Scope
+on:
+  push:
+    branches:
+      - 'research/native-executor-v1.1'
+  pull_request:
+    paths:
+      - 'research/native-executor-v1.1/**'
+      - '.github/workflows/research-native-executor-v11.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  executor-fixtures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Compile v1.1 executor, tests and inherited library
+        run: python3 -m compileall -q research/native-executor-v1.1
+      - name: Run fixture-only approval, drift and native-method tests
+        working-directory: research/native-executor-v1.1
+        run: python3 -m unittest -v test_native_executor_v11
+      - name: Verify standalone production source is never entered in CI
+        run: echo 'Original release and real user caches are unavailable to CI. Test-only mocks route native npm and uv commands into TemporaryDirectory fixtures.'
