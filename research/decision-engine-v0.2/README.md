@@ -55,6 +55,8 @@ python3 -m unittest -v test_blind_v02
 
 Real audit collection or outbound provider calls should be undertaken only in an independently authorized operator context, after reviewing the provider's data-handling boundaries; no automated GitHub Actions job makes external model requests.
 
+See the [independent human-gold protocol](HUMAN-GOLD-PROTOCOL-v0.1.md) before labeling any future holdout. The v0.2 model-exposed cases cannot be retrospectively claimed as an unseen holdout.
+
 ## Next preregistered milestone
 
 Create independent evidence-backed human adjudication for the 12 **masked** candidates, ideally two annotators and a third arbitration stage. Separately test category-specific regeneration on safe synthetic fixtures. Verify that a conservative model changes from KEEP only when *presently valid* source, restore, activity and offline-impact evidence is available. **Do not use generated model labels as human gold.**
