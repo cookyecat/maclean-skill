@@ -12,7 +12,7 @@ Actual original v1.4.0 bundle was verified against **four pinned source digests*
 | npx `_npx/<key>` | 10 | **663.2 MiB** | Optional, passes preview; hard blocked from real `--apply` |
 | uv | 0 | n/a | Not present as an original catalog candidate on this Mac after earlier approved deletion; method tested in isolated fixture |
 
-New real Mac research plan at `/tmp/maclean-v11-final-readonly.J9LphZ/native-draft.json`, 0600 under private 0700 directory. The plan is **UNAPPROVED**, `user_approved=false`, SHA-256 of draft: `be6855bd7f4ce5eabf4fcc3494560f13366e5762e1c5765d18abd0e3a2295813`. This path and hash are an experiment receipt, NOT approval or an instruction to apply.
+Final refreshed real Mac research plan at `/tmp/maclean-v11-final-verified.G4hH2q/unapproved-native-batch.json`, 0600 under private 0700 directory. The plan is **UNAPPROVED**, `user_approved=false`, SHA-256 of draft: `c809241bd9530ffe05542d959550a7aa99636a71c7654c36e8785dc87a06ba09`. This path and hash are an experiment receipt, NOT approval or an instruction to apply.
 
 Real Mac v1.1 preview on `npm_cache-001`: **PASS**, 2,356.8 MiB gross allocation, no net reclaim estimate, no deletion. One npx key (the original triage ID `npx_install-003`) was separately previewed and returned `blocked_from_execution`.
 
@@ -37,3 +37,9 @@ Even when an npm cache is reproducible, in-flight npm installs may fail if full 
 The new executor is a separate, pinned research script; it is not an installed MacLean v1.5 release, and the old v1.4.0 `cleanup_plan.py` was never patched.
 
 Important goal: ordinary users see one DEFAULT/OPTIONAL review, not low-level CacheStorage, E3 or process guard switches.
+
+## Cross-platform acceptance and genuine failure repaired
+
+The first Linux GitHub run **FAILED**, even though macOS passed: Linux may immediately reuse the same inode when a directory is deleted and recreated. Device/inode alone was insufficient to detect the replacement. v1.1 was corrected to bind a stable macOS birthtime (or conservative Linux ctime ns), owner UID, device and inode. The exact negative regression now passes on both Mac and GitHub. This improvement is NOT a claim of race-free atomic native path access.
+
+**Latest GitHub research CI success:** https://github.com/cookyecat/maclean-skill/actions/runs/38973266888 . **Latest static source integrity CI success:** https://github.com/cookyecat/maclean-skill/actions/runs/38973266892 . Latest local Mac **24/24 PASS**.
