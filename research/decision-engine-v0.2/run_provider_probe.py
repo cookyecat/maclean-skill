@@ -45,7 +45,7 @@ def main():
     a=p.parse_args()
     blind=json.loads(a.blind.read_text())
     cases=blind['cases']
-    assert len(cases)==12 and blind['dataset']=='real-coarse-blind-v0.2'
+    assert len(cases)==12 and blind['dataset'] in ('real-coarse-blind-v0.2','counterfactual-evidence-supplement-v0.2')
     raw=json.dumps(blind,ensure_ascii=False)
     assert all(t not in raw for t in ('/Users/','/var/folders/','~/','API_KEY','sk-'))
     assert a.output_dir.is_dir() and a.output_dir.stat().st_mode&0o077==0
