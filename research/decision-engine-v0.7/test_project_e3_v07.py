@@ -3,6 +3,7 @@
 import copy,hashlib,json,pathlib,secrets,shutil,tempfile,unittest
 from project_witness import fixture,scan,ScopeDenied,guarded_root
 from fixture_attestation import FixtureWitnessIssuer,AttestationRejected,digest
+from pinned_metadata_e2 import probe as publisher_probe, isolated_publisher_root
 
 SEL=["client-ALPHA"]
 def att(root,issuer=None):
@@ -203,5 +204,22 @@ class AttestationTests(unittest.TestCase):
             before=path.read_bytes()
             i,p,n,e=att(root);verify(i,p,n,e,root)
             self.assertEqual(path.read_bytes(),before)
+
+class PinnedPublisherTests(unittest.TestCase):
+    def test_official_disposable_package_source_if_present(self):
+        marker=pathlib.Path("/tmp/maclean-v05-native-latest-path.txt")
+        if not marker.is_file():self.skipTest("Mac-only pinned package fixture unavailable")
+        root=pathlib.Path(marker.read_text().strip())
+        result=publisher_probe(root)
+        self.assertEqual(result["version"],"1.64.1")
+        self.assertGreater(result["reference_count"],0)
+        self.assertEqual(result["unselected_link_count"],1)
+        self.assertEqual(result["completeness"],"PARTIAL_REAL_HOST_UNPROVEN")
+        self.assertFalse(result["user_project_scanned"])
+        self.assertFalse(result["deletion_authorized"])
+
+    def test_pinned_package_reader_rejects_real_home(self):
+        with self.assertRaises(ScopeDenied):
+            isolated_publisher_root(pathlib.Path.home())
 
 if __name__=="__main__":unittest.main(verbosity=2)
