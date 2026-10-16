@@ -1,10 +1,10 @@
-# Installation and safe first run — community draft v1.3.1
+# Installation and safe first run — community draft v1.4.0
 
-> **v1.3.1 fixes embedded installation and transport references.** Verify the actual installed Skill version. Historical v1.3.0 G0–G7 evidence does not certify newly changed v1.3.1 bytes.
+> **v1.4.0 fixes embedded installation and transport references.** Verify the actual installed Skill version. Historical v1.3.0 G0–G7 evidence does not certify newly changed v1.4.0 bytes.
 
 ## ChatGPT with an authorized Mac connector
 
-1. Import the exact `macos-disk-auditor-v1.3.1.zip` from `artifacts/` via your supported Skill installation UI. An installed or selected Skill does **not** grant access to the Mac.
+1. Import the exact `macos-disk-auditor-v1.4.0.zip` from `artifacts/` via your supported Skill installation UI. An installed or selected Skill does **not** grant access to the Mac.
 2. In a new conversation, ask the agent to read the *actually installed* `SKILL.md` and manifest; verify version `1.3.1`, and request **read-only Privacy Safe** audit.
 3. Authorize Mac MCP Gateway or another Mac computer connector **separately**, subject to your own chosen scope. Do not enable Full Disk Access as a requirement of this Skill.
 4. Allow deployment of verified original files and reports to a fresh disposable location only. The agent must run **bundled** scripts, not replace them with ad hoc `find`/`du` commands.
@@ -15,7 +15,7 @@
 Run only after you trust and locally possess the ZIP. The commands below create a staging directory and owner-private reports, but do not delete any audited user data:
 
 ```bash
-ZIP="$HOME/Downloads/macos-disk-auditor-v1.3.1.zip"
+ZIP="$HOME/Downloads/macos-disk-auditor-v1.4.0.zip"
 STAGE="$(mktemp -d)"
 unzip -q "$ZIP" -d "$STAGE"
 cd "$STAGE/macos-disk-auditor" || exit 1
@@ -60,3 +60,8 @@ Never autonomously invoke `--apply`, pipe `DELETE`, change system permissions, o
 ## Compatibility
 
 Published full Mac acceptance evidence exists for **macOS 26.5.2, Python 3.14.7**, one Mac mini and one Gateway configuration. Python language syntax in the package suggests Python ≥3.10; that is a **minimum syntax requirement**, not proof of testing on every Python version. See [COMPATIBILITY.md](COMPATIBILITY.md).
+
+
+> v1.4.0 is an **unreleased development candidate**. Do not replace
+a tested v1.3.1 installation without reviewing changed privacy scope.
+Chrome/Feishu exact Service Worker CacheStorage leaves can now be measured.

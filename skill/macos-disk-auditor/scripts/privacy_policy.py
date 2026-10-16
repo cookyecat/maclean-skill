@@ -26,6 +26,32 @@ DYNAMIC = (
     ('.codex/packages/app-server-daemon/releases', r'\d+\.\d+\.\d+(?:-[A-Za-z0-9._-]+)?', 'codex_daemon_old', 'home'),
     ('Library/Application Support/Cursor/User/globalStorage/anysphere.cursor-agent-worker/agent-cli/.local/share/cursor-agent/versions', r'20\d\d\.\d\d\.\d\d[-_][A-Za-z0-9-]+', 'old_version', 'library'),
 )
+# Specific known cache/log/update leaves, not a cleanup recommendation.
+# Each tuple: kind, required process guard, rebuild-risk evidence.
+APP_EXACT = {
+ 'Library/Application Support/BambuStudio/log':('app_log','BambuStudio','diagnostic'),
+ 'Library/Application Support/com.netease.163music/Caches/online_play_cache':('app_cache','NetEase','streaming_redownload'),
+ 'Library/Caches/baidunetdisk-updater':('app_cache','BaiduNetdisk','updater_redownload'),
+ 'Library/Caches/youku-app-updater':('app_cache','Youku','updater_redownload'),
+ 'Library/Caches/com.tencent.tenvideo':('app_cache','TencentVideo','offline_media_risk'),
+ 'Library/Application Support/Cursor/CachedData':('app_cache','Cursor','editor_rebuild'),
+ 'Library/Application Support/Cursor/logs':('app_log','Cursor','diagnostic'),
+ 'Library/Application Support/Cursor/Cache':('app_cache','Cursor','editor_rebuild'),
+ 'Library/Application Support/Code/CachedData':('app_cache','VS Code','editor_rebuild'),
+ 'Library/Application Support/XesCache_literacy/preload':('app_cache','Xueersi','offline_preload_risk'),
+ 'Library/Application Support/Steam/appcache':('app_cache','Steam','launcher_rebuild'),
+ 'Library/Application Support/Google/Chrome/Default/Service Worker/CacheStorage':('profile_cache','Chrome','offline_web_apps_risk'),
+}
+# Only enumerate a known version directory or the Feishu user-ID directory.
+APP_DYNAMIC = (
+ ('Library/Application Support/Xmind/Electron v3/vana/auto-updater',r'Xmind-darwin-universal-\d{12,16}\.zip','','app_update','Xmind','updater_redownload'),
+ ('Library/Application Support/LarkShell/aha/users',r'[0-9a-f]{16,64}','profile_explorer/Service Worker/CacheStorage','profile_cache','Feishu','offline_collaboration_risk'),
+)
+
+PROFILE_SENSITIVE_COMPONENTS = {'default','profile','profiles','profile_explorer',
+                                'service worker','local storage','session storage',
+                                'indexeddb','cookies','webstorage','web data',
+                                'network','history'}
 SENSITIVE_PARTS = {'documents', 'desktop', 'downloads', 'pictures', 'movies', 'music',
                    'mail', 'messages', 'keychains', 'photos', 'mobile documents',
                    'cloudstorage', 'mobilesync', 'clouddocs', 'addressbook', 'facetime',
@@ -57,6 +83,29 @@ def _relative(home: Path, target: Path) -> str:
     return '/'.join(parts)
 
 
+
+def app_catalog_entry(relative: str):
+    if relative in APP_EXACT:
+        k,g,r=APP_EXACT[relative]
+        return {'kind':k,'guard':g,'risk':r,'app':g}
+    for parent, pattern, suffix, k,g,r in APP_DYNAMIC:
+        prefix=parent+'/'
+        if not relative.startswith(prefix):
+            continue
+        tail=relative[len(prefix):]
+        if suffix:
+            ending='/'+suffix
+            if not tail.endswith(ending):
+                continue
+            tail=tail[:-len(ending)]
+        if re.fullmatch(pattern,tail):
+            return {'kind':k,'guard':g,'risk':r,'app':g}
+    return None
+
+def is_profile_area(relative: str) -> bool:
+    return relative.startswith(('Library/Application Support/Google/Chrome/',
+                                'Library/Application Support/LarkShell/aha/users/'))
+
 def authorize_scan(home: Path, target: Path, project_root: Path | None = None, user_selected_cache: bool = False):
     """Return (kind, group) for an approved *scan location*, never deletion approval.
 
@@ -66,10 +115,14 @@ def authorize_scan(home: Path, target: Path, project_root: Path | None = None, u
     relative = _relative(home, target)
     if relative in EXACT:
         return EXACT[relative]
+    meta=app_catalog_entry(relative)
+    if meta: return meta['kind'],'library'
     for parent, pattern, kind, group in DYNAMIC:
         prefix = parent + '/'
         if relative.startswith(prefix) and re.fullmatch(pattern, relative[len(prefix):]):
             return kind, group
+    if is_profile_area(relative):
+        raise PolicyDenied('Unrecognized personal profile path')
     if user_selected_cache and relative.startswith('Library/Caches/'):
         parts = Path(relative).parts
         if len(parts) == 3 and parts[-1].casefold() not in SENSITIVE_PARTS:
@@ -110,6 +163,22 @@ def discover(home: Path, group: str | None = None, project_root: Path | None = N
             if re.fullmatch(regex, p.name) and not p.is_symlink() and p.is_dir():
                 authorize_scan(home, p)
                 found.append((p, kind, section))
+    if group in (None, 'library'):
+        for rel,(kind,guard,risk) in APP_EXACT.items():
+            p=home/rel
+            if not p.is_symlink() and p.exists() and (p.is_dir() or p.is_file()):
+                authorize_scan(home,p)
+                found.append((p,kind,'library'))
+        for parent,regex,suffix,kind,guard,risk in APP_DYNAMIC:
+            directory=home/parent
+            if directory.is_symlink() or not directory.is_dir(): continue
+            _relative(home,directory)
+            for ent in sorted(directory.iterdir()):
+                if not re.fullmatch(regex,ent.name) or ent.is_symlink(): continue
+                p=ent/suffix if suffix else ent
+                if not p.is_symlink() and p.exists() and (p.is_dir() or p.is_file()):
+                    authorize_scan(home,p)
+                    found.append((p,kind,'library'))
     if project_root is not None and group in (None, 'developer'):
         p = Path(project_root).expanduser().absolute() / 'target'
         authorize_scan(home, p, project_root=project_root)
@@ -127,7 +196,14 @@ def protected_cleanup_target(home: Path, target: Path) -> None:
     rel = _relative(home, target)
     # The legacy Library cleanup kinds may allow narrow app cache/log leaves,
     # but not any leaf underneath a sensitive personal-data parent.
+    if is_profile_area(rel):
+        meta=app_catalog_entry(rel)
+        if meta is None or meta['kind'] != 'profile_cache':
+            raise PolicyDenied('Uncataloged personal profile content protected')
     lower = [p.casefold() for p in Path(rel).parts]
+    if (any(x in PROFILE_SENSITIVE_COMPONENTS for x in lower)
+            and (app_catalog_entry(rel) or {}).get('kind') != 'profile_cache'):
+        raise PolicyDenied('Non-cataloged profile cache/state is protected')
     if any(part in SENSITIVE_PARTS for part in lower):
         raise PolicyDenied('privacy-protected location may not be cleaned by this Skill')
     # Refuse broad directories even if the upstream kind validator were relaxed.

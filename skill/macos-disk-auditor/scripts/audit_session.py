@@ -68,7 +68,7 @@ def main():
         else:error=error or f'Bundled script refused or failed: exit={exit_code}'
     except subprocess.TimeoutExpired:
         status='timeout';error='Audit exceeded bounded timeout'
-    report={'skill':'macos-disk-auditor','version':'1.3.1',
+    report={'skill':'macos-disk-auditor','version':'1.4.0',
             'bundle_manifest_sha256':v['manifest_sha256'],
             'bundle_integrity_checked_files':v['checked'],
             'executed_script':script.relative_to(bundle).as_posix(),

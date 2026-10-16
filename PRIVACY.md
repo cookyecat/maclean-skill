@@ -29,3 +29,16 @@ Audit consent is not deletion consent. AI produces a contextual recommendation; 
 ## Reporting privacy issues
 
 Please do **not** attach real personal directory listings, user paths, tokens or process arguments to public issues. See [SECURITY.md](SECURITY.md) for private security reporting. Privacy design is informed by the frozen [`references/privacy-threat-model.md`](skill/macos-disk-auditor/references/privacy-threat-model.md), but implementation remains subject to future review and testing.
+
+## Scope change proposed for v1.4.0
+In addition to technical development caches, the scanner discovers **exact**
+cataloged app cache/log/updater leaves. The only recognized personal-profile
+exceptions are **Chrome Default** and **Feishu** Service Worker CacheStorage
+leaves. For Feishu, the scanner lists opaque immediate child IDs within one
+known users directory to locate those leaves; default reports never contain
+the IDs. It measures the cache leaf with du (which traverses that cache), but
+does **not** read file payloads or recursively size browser/app profile parents.
+This is a real expansion of metadata accessed compared with v1.3.1.
+Offline-first caches may not be fully reconstructable. Exposing a cache as a
+candidate is not equivalent to preselecting it for deletion. Arbitrary profile
+cache/state paths stay blocked.
