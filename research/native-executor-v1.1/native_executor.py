@@ -225,8 +225,8 @@ def native_env(context:pathlib.Path,op,path):
     private_dir(context)
     env={k:v for k,v in os.environ.items() if not k.casefold().startswith(("npm_config_","uv_"))}
     env["NODE_OPTIONS"]=""
-    env.update({"NPM_CONFIG_USERCONFIG":str(context/"empty.npmrc"),
-                "NPM_CONFIG_GLOBALCONFIG":str(context/"empty.npmrc"),
+    env.update({"NPM_CONFIG_USERCONFIG":str(context/"empty-user.npmrc"),
+                "NPM_CONFIG_GLOBALCONFIG":str(context/"empty-global.npmrc"),
                 "NPM_CONFIG_LOGS_DIR":str(context/"logs"),
                 "NPM_CONFIG_IGNORE_SCRIPTS":"true","NPM_CONFIG_UPDATE_NOTIFIER":"false",
                 "NPM_CONFIG_OFFLINE":"true","NPM_CONFIG_AUDIT":"false",
@@ -295,7 +295,9 @@ def apply(skill_root,planpath,chosen,approval):
     human_confirm(digest,chosen)
     with tempfile.TemporaryDirectory(prefix="maclean-v11-native-config-") as directory:
         context=pathlib.Path(directory).resolve();context.chmod(0o700)
-        (context/"empty.npmrc").write_text("");(context/"empty.npmrc").chmod(0o600)
+        for cfg in ("empty-user.npmrc","empty-global.npmrc"):
+            (context/cfg).write_text("")
+            (context/cfg).chmod(0o600)
         (context/"logs").mkdir(mode=0o700)
         before=shutil.disk_usage(pathlib.Path.home()).free
         receipts=[]
