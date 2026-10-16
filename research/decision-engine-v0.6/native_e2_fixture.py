@@ -26,10 +26,14 @@ def bounded_root(path:pathlib.Path) -> pathlib.Path:
 def bounded_file(root:pathlib.Path, relative:str) -> dict:
     """Lstat every synthetic component; simple synthetic mode is NOT browser authenticity."""
     # Never even lstat a user-supplied root; this function is fixture-only.
-    if (root.is_symlink() or not root.name.startswith("maclean-v06-")
-            or root.parent not in {pathlib.Path("/private/tmp"),
-                                   pathlib.Path(tempfile.gettempdir()).resolve()}
-            or not root.is_dir() or root.stat().st_mode & 0o077):
+    allowed_parents={pathlib.Path("/private/tmp"),pathlib.Path(tempfile.gettempdir()).resolve()}
+    outer=(root.parent if root.name=="browser-cache" else root)
+    valid=(outer.name.startswith("maclean-v06-") and outer.parent in allowed_parents
+           and (root==outer or (outer.name.startswith("maclean-v06-trust-fixture-")
+                                and root.parent==outer and root.name=="browser-cache")))
+    if (not valid or root.is_symlink() or outer.is_symlink() or not root.is_dir()
+            or not outer.is_dir() or root.stat().st_mode & 0o077
+            or outer.stat().st_mode & 0o077):
         return {"status":"OUTSIDE_DISPOSABLE_FIXTURE_DENIED"}
     if not relative or len(relative)>240:return {"status":"INVALID_RELATIVE"}
     parts=pathlib.PurePosixPath(relative).parts
