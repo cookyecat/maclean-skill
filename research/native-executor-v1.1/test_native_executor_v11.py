@@ -152,6 +152,29 @@ class V11(unittest.TestCase):
             self.assertNotEqual(environment["NPM_CONFIG_GLOBALCONFIG"],"/tmp/hostile")
             self.assertNotEqual(environment["NPM_CONFIG_USERCONFIG"],environment["NPM_CONFIG_GLOBALCONFIG"])
 
+    def test_review_for_ordinary_user_has_no_paths(self):
+        self.build()
+        result=ex.review(self.plan)
+        self.assertEqual(result["default_count"],1)
+        self.assertEqual(result["optional_count"],1)
+        self.assertFalse(result["user_approved"])
+        self.assertEqual(result["items"][1]["action"],"PREVIEW_ONLY")
+        self.assertNotIn("path",result["items"][0])
+        self.assertIn("rebuild_impact",result["items"][0])
+
+    def test_uv_native_apply_only_in_disposable_fixture(self):
+        if not shutil.which("uv"):self.skipTest("uv unavailable")
+        uv=self.home/".cache"/"uv"
+        uv.mkdir(parents=True)
+        self.rows.append({"id":"uv1","kind":"uv_cache","path":"~/.cache/uv",
+                          "status":"REVIEW","size_mib":2.0,"safety_blocks":[]})
+        self.build();self.approve(["uv1"])
+        with patch.object(ex,"human_confirm",return_value=None):
+            receipt=ex.apply(self.home,self.plan,["uv1"],self.approval)
+        self.assertEqual(receipt["success_count"],1)
+        self.assertTrue(self.cache.exists())
+        self.assertTrue(self.npx.exists())
+
     def test_unknown_target_method_refused(self):
         self.build()
         x=json.loads(self.plan.read_text())
