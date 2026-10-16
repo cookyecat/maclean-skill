@@ -47,8 +47,11 @@ class Evidence:
     download_recovery_verified: bool = False
     offline_dependency_excluded: bool = False
     workflow_impact_low: bool = False
+    attestation_origin: str = "NONE"  # never accept AI self-attestation
 
     def evaluate(self) -> dict[str, Any]:
+        if self.attestation_origin not in ("NONE","SYNTHETIC_TEST","INDEPENDENT_LOCAL_SENSOR"):
+            raise EvidenceError("invalid attestation origin")
         if self.artifact_kind not in PUBLISHER_CATALOG:
             raise EvidenceError("unsupported artifact category")
         if self.state not in ("REVIEW", "ACTIVE", "PROTECTED", "UNKNOWN"):
@@ -61,7 +64,7 @@ class Evidence:
             raise EvidenceError("unverified exact usage signal")
         e1 = self.publisher_claim_verified and self.publisher_doc_id is not None
         e2 = e1 and self.fixture_passed and self.fixture_isolated
-        e3 = e2 and all((
+        e3_conditions = e2 and all((
             self.exact_local_identity_verified,
             self.exact_target_use_checked,
             self.active_target_reference is False,
@@ -69,6 +72,8 @@ class Evidence:
             self.offline_dependency_excluded,
             self.workflow_impact_low,
         ))
+        e3 = e3_conditions and self.attestation_origin == "INDEPENDENT_LOCAL_SENSOR"
+        synthetic_e3_sufficiency = e3_conditions and self.attestation_origin == "SYNTHETIC_TEST"
         veto = self.state != "REVIEW"
         missing = []
         if not e1: missing.append("PUBLISHER_LIFECYCLE_E1")
@@ -84,12 +89,13 @@ class Evidence:
             "e1_publisher":bool(e1),
             "e2_fixture":bool(e2),
             "e3_current_use_and_recovery":bool(e3),
+            "synthetic_e3_counterfactual_only":bool(synthetic_e3_sufficiency),
             "machine_state_veto":veto,
             "ready_for_ai_benefit_assessment":bool(e3 and not veto),
             "missing_evidence":missing,
             "deletion_authorized":False,
             "actual_cleanup_support":False,
-            "caveat":"Not an approval, clean command, or production E3 verification",
+            "caveat":"Untrusted AI must not populate attestation fields; no production E3 sensor implemented",
         }
 
 def from_json(item: dict) -> Evidence:
