@@ -175,6 +175,36 @@ class V11(unittest.TestCase):
         self.assertTrue(self.cache.exists())
         self.assertTrue(self.npx.exists())
 
+    def test_material_change_in_allocated_size_refused(self):
+        self.build()
+        self.rows[0]["size_mib"]=1000.0
+        with self.assertRaises(ex.Denied):
+            ex.preview(self.home,self.plan,["npm1"])
+
+    def test_execution_lock_refuses_parallel_apply(self):
+        self.build();self.approve(["npm1"])
+        digest=ex.sha(self.plan.read_bytes())
+        lock=self.home/("native-apply-"+digest[:16]+".lock")
+        lock.write_text("another executor owns this plan")
+        lock.chmod(0o600)
+        with patch.object(ex,"human_confirm",return_value=None):
+            with self.assertRaises(ex.Denied):
+                ex.apply(self.home,self.plan,["npm1"],self.approval)
+        self.assertTrue(self.cache.exists())
+
+    def test_execution_journal_is_durable_and_private(self):
+        if not shutil.which("npm"):self.skipTest("npm unavailable")
+        self.build();self.approve(["npm1"])
+        with patch.object(ex,"human_confirm",return_value=None):
+            ex.apply(self.home,self.plan,["npm1"],self.approval)
+        digest=ex.sha(self.plan.read_bytes())
+        journal=self.home/("native-apply-"+digest[:16]+".jsonl")
+        lock=self.home/("native-apply-"+digest[:16]+".lock")
+        events=[json.loads(x)["event"] for x in journal.read_text().splitlines()]
+        self.assertEqual(events,["START","BEFORE_NATIVE","SUCCESS","COMPLETE"])
+        self.assertEqual(journal.stat().st_mode&0o777,0o600)
+        self.assertEqual(lock.stat().st_mode&0o777,0o600)
+
     def test_unknown_target_method_refused(self):
         self.build()
         x=json.loads(self.plan.read_text())
