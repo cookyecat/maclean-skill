@@ -11,23 +11,23 @@ from collections import Counter
 from typing import Any
 
 AUTO: dict[tuple[str,str],tuple[str,str]] = {
-    ("npm_cache",""):("npm package content cache","Packages are downloaded again when required; offline/npm tasks may be slower"),
-    ("uv_cache",""):("uv package/build cache","Later uv commands may re-download or rebuild; offline work could be affected"),
-    ("codex_runtime_installer",""):("stale Codex runtime installer","Installer files may be downloaded again; original executor still enforces age >= 7 days"),
-    ("app_log","diagnostic"):("application diagnostic logs","Clearing logs removes older debugging history; the app may create new logs"),
-    ("app_update","updater_redownload"):("old application update download","The application may need to download the updater again"),
-    ("app_cache","updater_redownload"):("application updater cache","Future application updates may download packages again"),
-    ("app_cache","editor_rebuild"):("editor UI/cache data","Editor may rebuild/index on restart and temporarily use more resources"),
+    ("npm_cache",""):("npm 可再下载的软件包缓存","后续 npm 任务可能重新下载依赖；离线环境下可能无法立即恢复"),
+    ("uv_cache",""):("uv 包与构建缓存","后续 uv 任务可能重新下载或编译，离线工作可能受影响"),
+    ("codex_runtime_installer",""):("已过期的 Codex 运行时安装文件","可能需要重新下载安装文件；原版执行器强制至少保留最近七天的安装产物"),
+    ("app_log","diagnostic"):("应用诊断日志","历史故障排查记录将消失；应用运行后可能重新产生日志"),
+    ("app_update","updater_redownload"):("旧版应用更新下载包","下次应用更新可能需要重新下载更新包"),
+    ("app_cache","updater_redownload"):("应用更新器缓存","下一次更新时可能需要重新下载安装包"),
+    ("app_cache","editor_rebuild"):("编辑器可重建的缓存数据","重新启动时编辑器可能重建缓存或索引，短期变慢"),
 }
 OPTIONAL: dict[tuple[str,str],tuple[str,str]] = {
-    ("npx_install",""):("downloaded npx execution packages","Commands may require a fresh install; offline tools may not start"),
-    ("puppeteer_cache",""):("Puppeteer browser download cache","Browser revisions may need large downloads; active or offline automation may fail"),
-    ("downloaded_runtime",""):("Playwright browser download cache","Browser binaries may be version-coupled; restoring may require large downloads"),
-    ("cargo_target",""):("Rust compiled project output","Rebuilding can be expensive; project root must satisfy the original Git safety gate"),
-    ("codex_daemon_old",""):("older Codex daemon release","Fallback may require re-download; original executor preserves current + two newest builds"),
-    ("old_version",""):("older Cursor Agent build","Fallback capability may be lost; original executor preserves newest builds"),
-    ("app_cache","launcher_rebuild"):("application launcher cache","Launcher may rebuild the data and start more slowly"),
-    ("app_cache","streaming_redownload"):("streaming playback cache","Media will need re-download, offline playback may no longer work"),
+    ("npx_install",""):("npx 下载的命令运行环境","下次执行命令可能重新安装依赖，离线工具可能无法启动"),
+    ("puppeteer_cache",""):("Puppeteer 浏览器下载缓存","以后可能需要重新下载较大的浏览器版本；离线自动化可能受影响"),
+    ("downloaded_runtime",""):("Playwright 浏览器下载缓存","浏览器版本可能与项目绑定，恢复可能需要大量下载"),
+    ("cargo_target",""):("Rust 项目构建产物","重新编译可能耗时；原版 Git 仓库安全校验必须通过"),
+    ("codex_daemon_old",""):("旧版 Codex daemon","回退时可能需要重新下载；原版执行器保护当前及最新两个版本"),
+    ("old_version",""):("旧版 Cursor Agent","可能减少版本回退能力；原版执行器保护最新版本"),
+    ("app_cache","launcher_rebuild"):("应用启动器缓存","应用下次启动可能重建缓存，短期变慢"),
+    ("app_cache","streaming_redownload"):("在线播放缓存","媒体需要重新缓存，已缓存的离线播放内容可能不可用"),
 }
 PRESERVE_RISKS={
     "offline_media_risk","offline_preload_risk",
