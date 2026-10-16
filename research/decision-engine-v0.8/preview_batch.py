@@ -41,7 +41,7 @@ def capture_original(skill_root:pathlib.Path):
     # Do not print raw observations (they can contain paths and PIDs).
     return scripts,observed
 
-def create_preview(skill_root:pathlib.Path,output_dir:pathlib.Path,extra_ids:list[str]):
+def create_preview(skill_root:pathlib.Path,output_dir:pathlib.Path,extra_ids:list[str],excluded_defaults:list[str]|None=None):
     # Caller-controlled private destination is itself not a cleanup target.
     if output_dir.is_symlink() or not output_dir.is_dir() or output_dir.stat().st_mode&0o077:
         raise PreviewDenied("output_dir must already exist with owner-only mode 0700")
@@ -49,11 +49,15 @@ def create_preview(skill_root:pathlib.Path,output_dir:pathlib.Path,extra_ids:lis
     decisions=assess(triage)
     byid={row["id"]:row for row in decisions["items"]}
     original={row["id"]:row for row in triage["candidates"]}
-    if len(extra_ids)!=len(set(extra_ids)):
-        raise PreviewDenied("duplicate optional IDs")
+    excluded_defaults=excluded_defaults or []
+    if len(extra_ids)!=len(set(extra_ids)) or len(excluded_defaults)!=len(set(excluded_defaults)):
+        raise PreviewDenied("duplicate selection IDs")
     if any(cid not in byid or byid[cid]["selection"]!="OPTIONAL" for cid in extra_ids):
         raise PreviewDenied("only exact current OPTIONAL IDs may be manually checked")
-    selected_ids={r["id"] for r in decisions["items"] if r["selection"]=="DEFAULT"}|set(extra_ids)
+    if any(cid not in byid or byid[cid]["selection"]!="DEFAULT" for cid in excluded_defaults):
+        raise PreviewDenied("only exact current DEFAULT IDs may be unchecked")
+    selected_ids=({r["id"] for r in decisions["items"] if r["selection"]=="DEFAULT"}
+                  -set(excluded_defaults))|set(extra_ids)
 
     # Import only the independently hash-verified original executor and catalog.
     sys.path.insert(0,str(scripts))
@@ -135,8 +139,10 @@ def main():
     p.add_argument("--skill-root",type=pathlib.Path,required=True)
     p.add_argument("--private-output-dir",type=pathlib.Path,required=True)
     p.add_argument("--include-optional",action="append",default=[],metavar="CANDIDATE_ID")
+    p.add_argument("--exclude-default",action="append",default=[],metavar="CANDIDATE_ID")
     args=p.parse_args()
-    print(json.dumps(create_preview(args.skill_root,args.private_output_dir,args.include_optional),ensure_ascii=False))
+    print(json.dumps(create_preview(args.skill_root,args.private_output_dir,args.include_optional,
+                                    args.exclude_default),ensure_ascii=False))
 if __name__=="__main__":
     try:main()
     except (ValueError,OSError,PolicyError,subprocess.TimeoutExpired,json.JSONDecodeError) as e:
