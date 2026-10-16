@@ -23,10 +23,22 @@ def guard(root:pathlib.Path):
     marker=resolved/MARKER
     if marker.is_symlink() or not marker.is_file() or marker.read_text()!="synthetic-only\n":
         raise ScopeDenied("fixture marker missing")
-    for name in ("home","npm-cache","uv-cache","logs","tmp"):
+    for name in ("home","npm-cache","logs","tmp"):
         child=resolved/name
         if child.is_symlink() or not child.is_dir() or child.resolve(strict=True).parent!=resolved:
             raise ScopeDenied("fixture path modified")
+    uvroot=resolved/"uv-cache"
+    if uvroot.is_symlink() or (uvroot.exists() and
+        (not uvroot.is_dir() or uvroot.resolve(strict=True).parent!=resolved)):
+        raise ScopeDenied("uv cache scope modified")
+    for sub in ("_npx","_cacache"):
+        cache=resolved/"npm-cache"/sub
+        if cache.is_symlink() or (cache.exists() and
+            (not cache.is_dir() or cache.resolve(strict=True).parent!=resolved/"npm-cache")):
+            raise ScopeDenied("npm nested cache scope modified")
+    for cfg in ("user.npmrc","global.npmrc"):
+        f=resolved/cfg
+        if f.is_symlink() or not f.is_file():raise ScopeDenied("unsafe local npm config")
     return resolved
 
 def env_for(root):
@@ -48,6 +60,18 @@ def env_for(root):
 def run_native(root,kind,argv):
     root=guard(root)
     if kind not in ("npm","uv"):raise ScopeDenied("unsupported executable")
+    permitted={
+      "npm": {("--version",),("cache","verify"),("cache","clean","--force"),
+              ("cache","npx","ls")},
+      "uv": {("--version",),("cache","prune"),("cache","clean")},
+    }
+    args=tuple(argv)
+    specific=(kind=="npm" and
+       ((len(args)==4 and args[:3]==("cache","npx","rm")
+         and NPX_KEY.fullmatch(args[3])) or
+        args==("cache","add",str(root/"fixture-demo.tgz"))))
+    if args not in permitted[kind] and not specific:
+        raise ScopeDenied("native argv not present in exact operation allowlist")
     tool=shutil.which(kind)
     if not tool:raise ScopeDenied("native CLI missing")
     process=subprocess.run([tool,*argv],cwd=root,env=env_for(root),
