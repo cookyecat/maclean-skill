@@ -22,7 +22,7 @@ jobs:
         run: python3 -m compileall -q research/decision-engine-v0.9
       - name: Test regeneration and hard protections
         working-directory: research/decision-engine-v0.9
-        run: python3 -m unittest -v test_regenerability_v09
+        run: python3 -m unittest -v test_regenerability_v09 test_native_method_v09
       - name: Research classifier must never create executable plan
         working-directory: research/decision-engine-v0.9
         run: |
