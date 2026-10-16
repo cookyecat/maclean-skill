@@ -20,4 +20,5 @@ jobs:
       - name: Verify original asset hash
         run: python3 tools/check_release_integrity.py
       - name: Policy reminder
-        run: echo 'STATIC ONLY: Mac G0-G7 privacy acceptance must be run separately before publication.'
+        run: |
+          echo 'STATIC ONLY: Mac G0-G7 privacy acceptance must be run separately before publication.'
