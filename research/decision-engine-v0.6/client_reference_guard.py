@@ -25,13 +25,16 @@ def scan_fixture_links(root:pathlib.Path, *, expected_clients:set[str]) -> dict:
             or len(expected_clients)>16
             or any(not re.fullmatch(r"client-[A-Za-z0-9_-]{1,24}",x) for x in expected_clients)):
         raise LinkDenied("invalid explicit fixture client allowlist")
-    links=root/"browser-cache"/".links"
+    browser_root=root/"browser-cache"
     clients=root/"clients"
-    if (links.is_symlink() or clients.is_symlink()
-            or not links.is_dir() or not clients.is_dir()
-            or links.resolve(strict=True).parent!=root/"browser-cache"
-            or (root/"browser-cache").is_symlink()):
-        raise LinkDenied("fixture layout invalid")
+    # Reject parent symlinks BEFORE any child stat(), is_dir() or manifest read.
+    if browser_root.is_symlink() or clients.is_symlink():
+        raise LinkDenied("fixture parent symlink forbidden")
+    if not browser_root.is_dir() or not clients.is_dir():
+        raise LinkDenied("fixture parents not directories")
+    links=browser_root/".links"
+    if links.is_symlink() or not links.is_dir() or links.resolve(strict=True).parent!=browser_root:
+        raise LinkDenied("fixture links layout invalid")
     entries=sorted(links.iterdir())
     if not entries or len(entries)>32:raise LinkDenied("no or excessive links")
     seen=set()
