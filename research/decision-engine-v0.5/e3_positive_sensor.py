@@ -5,7 +5,7 @@ Only two exact technical cache leaves already allowed by MacLean's privacy
 policy, or a disposable synthetic fixture. Never reads file content, enumerates
 Home/Library, or returns PIDs, file names, commands, profile IDs or paths.
 
-It can positively observe an open reference. NO observation is NOT proof a
+lsof +d can enumerate direct child metadata inside exactly named technical cache leaves; only summaries are returned.\nIt can positively observe an open reference. NO observation is NOT proof a
 cache is unused, even if lsof exits successfully.
 """
 from __future__ import annotations
@@ -76,7 +76,8 @@ def inspect_real_known_leaves() -> dict:
        "observation_time_utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),
        "policy":"two_maclean_exact_known_technical_cache_leaves_only",
        "results":results,
-       "content_read":False,"paths_enumerated":False,"personal_profiles_scanned":False,
+       "content_read":False,"direct_leaf_child_metadata_may_be_enumerated_by_lsof":True,
+       "raw_names_or_process_metadata_disclosed":False,"personal_profiles_scanned":False,
        "any_real_file_modified":False,"services_stopped":False,
        "e3_positive_reference_only":True,"e3_complete_usage_proof":False,
        "execution_authorized":False}
