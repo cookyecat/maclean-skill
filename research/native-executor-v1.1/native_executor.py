@@ -124,7 +124,13 @@ def fs_identity(path):
     if path.is_symlink() or not path.exists():stop("native cache target disappeared")
     st=path.lstat()
     if not stat.S_ISDIR(st.st_mode):stop("native cache target is not an ordinary directory")
-    return {"dev":st.st_dev,"ino":st.st_ino}
+    # Inodes alone may be reused instantly on Linux and APFS after replacement.
+    # macOS birthtime is stable across ordinary directory content changes;
+    # Linux falls back to nanosecond ctime (conservative under directory writes).
+    created_ns=(int(st.st_birthtime*1_000_000_000)
+                if hasattr(st,"st_birthtime") else st.st_ctime_ns)
+    return {"dev":st.st_dev,"ino":st.st_ino,
+            "created_ns":created_ns,"uid":st.st_uid}
 
 def snapshot(rows):return {r.get("id"):r for r in rows if isinstance(r,dict)}
 def snapshot_id(entries):
@@ -184,8 +190,9 @@ def parse_plan(planpath):
     if any(set(x)!=allowed_keys for x in items):stop("unexpected target fields")
     for entry in items:
         identity=entry["target_identity"]
-        if (not isinstance(identity,dict) or set(identity)!={"dev","ino"}
-                or any(type(identity[k]) is not int or identity[k]<=0 for k in ("dev","ino"))):
+        if (not isinstance(identity,dict) or set(identity)!={"dev","ino","created_ns","uid"}
+                or any(type(identity[k]) is not int or identity[k]<=0 for k in ("dev","ino","created_ns"))
+                or type(identity["uid"]) is not int or identity["uid"]<0):
             stop("invalid file identity")
         if entry["operation"]=="npm.cache.npx.rm_exact" and entry["preview_only"] is not True:
             stop("npx runtime removal must remain preview-only")
