@@ -1,4 +1,4 @@
-# Remote Privacy Safe audit — v1.3.1
+# Remote Privacy Safe audit — v1.4.0
 
 ## Privacy boundary
 Never run recursive du/find over Home, Library, .codex, Developer or any unselected parent directory. Even with Full Disk Access, personal content must not be enumerated or measured. The original scanner only measures technical leaves approved by privacy_policy.py. complete_within_policy is not full Home coverage.

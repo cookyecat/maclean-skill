@@ -3,7 +3,7 @@
 import argparse
 import json
 from pathlib import Path
-from privacy_policy import POLICY_ID, EXCLUDED_CLASSES, discover, public_id
+from privacy_policy import POLICY_ID, EXCLUDED_CLASSES, discover, public_id, app_catalog_entry
 from cleanup_plan import disk_kib, resolve_target, running
 
 GUARD_BY_KIND = {'npm_cache':'Npm','npx_install':'Npm','uv_cache':'Uv',
@@ -22,10 +22,14 @@ def main():
     found = discover(home, project_root=a.project_root)
     candidates = []
     for index,(path,kind,group) in enumerate(found,1):
-        guard = GUARD_BY_KIND[kind]
+        meta=app_catalog_entry(path.relative_to(home).as_posix())
+        guard=meta['guard'] if meta else GUARD_BY_KIND[kind]
         row = {'id':public_id(kind,index), 'kind':kind, 'group':group,
                'ai_assessment':'REQUIRED', 'approved':False,
                'status':'REVIEW', 'size_mib':None, 'safety_blocks':[]}
+        if meta:
+            row.update({'app':meta['app'],'rebuild_risk':meta['risk']})
+            if kind=='profile_cache': row['review_flags']=['OFFLINE_DATA_MAY_NOT_REDOWNLOAD']
         if a.details:
             row['path'] = '~/' + path.relative_to(home).as_posix()
         try:

@@ -1,14 +1,14 @@
 # MacLean — Privacy-First macOS Disk Auditing (AI-Guided)
 
-**Public source release · v1.3.1 · MIT License**
+**Development candidate · v1.4.0 · MIT License**
 
-macOS Disk Auditor is a reusable agent Skill for identifying *technical cache and build artifacts* that might be worth reclaiming. It measures a deliberately narrow set of paths and gives the assistant evidence for analysis. **The AI assesses reclaim value and risk; scripts do not decide what should be deleted.** A separate executor enforces technical safety checks and requires explicit, per-target human approval for any real deletion.
+macOS Disk Auditor is a reusable agent Skill for identifying *technical cache and build artifacts* that might be worth reclaiming. It measures a catalog of exact technical cache/log/update leaves and gives the assistant evidence for analysis. **The AI assesses reclaim value and risk; scripts do not decide what should be deleted.** A separate executor enforces technical safety checks and requires explicit, per-target human approval for any real deletion.
 
 > **Privacy by default:** No broad recursive scan of Home, Library, Documents or personal application data. Filesystem access permission does not itself grant consent to inspect personal information.
 
 ## What it does
 
-- Privacy Safe scan of recognized technical leaves (npm/npx, uv, Puppeteer, known Codex runtime installations, and limited technical items within Library).
+- Privacy Safe scan of recognized technical leaves (npm/npx, uv, Puppeteer, known Codex runtime installations, and cataloged third-party app cache/log/update leaves in Library).
 - Optional developer-scoped Cargo `target` measurement **only when a specific project is selected**.
 - Read-only candidate triage, risk/blocker information and human-readable AI review.
 - Structured, limited-information JSON, local report directory `0700` and report file `0600`.
@@ -16,7 +16,7 @@ macOS Disk Auditor is a reusable agent Skill for identifying *technical cache an
 
 ## What it does NOT do
 
-- It does not measure the total space used by Home or Library, index all files, or scan Mail, Messages, Photos, iCloud documents, AddressBook, Keychains or browser profiles.
+- It does not measure the total space used by Home or Library, index all files, or scan Mail, Messages, Photos, iCloud documents, AddressBook, Keychains or unrelated browser profiles.
 - It does not automatically delete files, stop active processes, grant Full Disk Access, elevate privileges or upload telemetry.
 - A `REVIEW` classification is **not** an AI recommendation or permission to delete.
 - Cache size measured by `du` is **not** a guarantee of free space recovered on APFS.
@@ -24,7 +24,7 @@ macOS Disk Auditor is a reusable agent Skill for identifying *technical cache an
 ## Quick start
 
 1. Obtain the release ZIP from a publisher/source you trust; verify its published SHA-256 (see `artifacts/SHA256SUMS.txt`). Do not infer source authenticity from an internal manifest alone.
-2. Upload `macos-disk-auditor-v1.3.1.zip` as a Skill in your compatible ChatGPT environment, or unpack it into an applicable Skills directory. Start a new session and verify the loaded Skill title is **v1.3.1**.
+2. Upload `macos-disk-auditor-v1.4.0.zip` as a Skill in your compatible ChatGPT environment, or unpack it into an applicable Skills directory. Start a new session and verify the loaded Skill title is **v1.4.0**.
 3. Authorize a Mac connector **separately**. Installing a Skill does not authorize filesystem access or execute a Mac script.
 4. Ask for a read-only Privacy Safe audit first, including manifest verification, and **prohibit any real cleanup**.
 5. Review the anonymous candidate summary; ask the AI for reasons and conditions before requesting any precise-path preview.
@@ -52,3 +52,16 @@ More: [AI ↔ executor contract](docs/AI-EXECUTOR-CONTRACT.md), [privacy policy]
 Read [中文说明](README.zh-CN.md) · [Contributing](CONTRIBUTING.md) · [Report security vulnerabilities](SECURITY.md)
 
 **v1.3.1 fixes [Issue #1](https://github.com/cookyecat/maclean-skill/issues/1).** Test the freshly installed v1.3.1 Skill independently; v1.3.0 acceptance is historical.
+
+## v1.4.0 development catalog — broadened discovery, not blanket cleanup
+MacLean now discovers named app caches, logs, old updater ZIPs and exact
+Chrome/Feishu Service Worker CacheStorage leaves. It never sizes whole
+profiles. Cloud and offline-first applications may depend on CacheStorage
+without reliably re-fetching it; AI must review this risk. Discovery is not
+approval or guaranteed rebuildability. A single AI-proposed batch may be
+reviewed and authorized as a whole after disclosure of its exact targets,
+while the executor continues to enforce a separate physical-terminal
+confirmation and vetoes unsafe targets.
+
+Current stable GitHub Release remains v1.3.1 until this candidate
+completes independent release acceptance. See [catalog](docs/CACHE-CATALOG.md).

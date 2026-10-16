@@ -1,4 +1,4 @@
-# Privacy threat model — v1.3.1
+# Privacy threat model — v1.4.0
 
 ## Assets at risk
 Personal documents, contact data, messages, iCloud documents, call history, TCC privacy data, browser profiles, developer source names, API tokens in process arguments, host/user identity, raw audit reports.
@@ -22,3 +22,12 @@ Attempt to scan an AddressBook/CloudDocs fixture directly => rejected before any
 
 ## Limits
 The default allowed cache leaves can hold user-generated data; this tool only measures allocated blocks, not contents. Treat eligibility for deletion as separate AI assessment with explicit user consent. A finite set of tests cannot prove all macOS builds and connector environments perfectly secure.
+
+## Expanded catalog (v1.4 candidate)
+Only explicitly listed app cache/log/update leaves are scanned. Chrome Default
+and Feishu user-profile Service Worker CacheStorage are exact narrow exceptions.
+Feishu user IDs are only enumerated locally at their known parent, never output
+by default. No profile parent is recursively measured; no file content is read.
+Offline-first service-worker caches may contain data not promptly recoverable;
+discovery is not consent or proof of safe deletion. Cookies, IndexedDB, history,
+Local Storage, credentials and uncataloged profile data remain blocked.

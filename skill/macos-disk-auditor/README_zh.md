@@ -1,4 +1,4 @@
-# macOS Disk Auditor & Safe Cleanup v1.3.1
+# macOS Disk Auditor & Safe Cleanup v1.4.0
 
 Privacy-First Community Edition。无需 sudo、不调整隐私权限、不读取个人资料内容。默认仅测量已知技术缓存叶子目录的已分配空间，不递归扫描整个 Home/Library。AI 根据用户目标、缓存再生性、依赖和风险分析是否值得清理；脚本负责不可绕过的隐私保护、计划预演以及经人工批准后的安全执行。工具不会自行决定什么“值得删除”。
 
@@ -30,3 +30,8 @@ python3 scripts/cleanup_plan.py --plan approved-plan.json   # dry-run；绝不�
 
 ## 验收
 G0–G7：版本读取、真实设备连接、原版部署、哈希校验、普通用户隔离夹具测试、真实受限审计、AI 人工分析、隐私边界。G4 测试只在 Mac 上的临时 HOME 创建及清理测试文件，绝不对真实用户文件进行删除。保存测试 stdout/stderr、退出码、版本及原版脚本哈希。不能用 ad-hoc shell 审计冒充原版工具通过。
+
+## v1.4 应用缓存发现
+自动发现明确目录下的部分应用缓存、日志、更新包；仅定向测量飞书用户 Profile
+及 Chrome Default 的 Service Worker CacheStorage 叶节点，不读取聊天、Cookies、
+IndexedDB、浏览历史或个人文件。离线应用缓存可能不可立即重建，AI 必须独立审查。

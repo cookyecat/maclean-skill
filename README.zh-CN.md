@@ -18,7 +18,7 @@
 ## 使用流程
 
 1. 从可信来源取得 ZIP，并比对 [SHA-256](artifacts/SHA256SUMS.txt)。
-2. 将原始 `macos-disk-auditor-v1.3.1.zip` 导入支持 Skills 的环境；新会话核对版本。安装 Skill **并不自动授权访问 Mac**。
+2. 将原始 `macos-disk-auditor-v1.4.0.zip` 导入支持 Skills 的环境；新会话核对版本。安装 Skill **并不自动授权访问 Mac**。
 3. 通过已独立授权的 Mac 连接器执行原版 `verify_bundle.py` 和只读审计，先不要申请实际清理。
 4. AI 结合测量值、进程保护、可再生性、离线需求与风险进行分析。
 5. 用户决定是否继续了解精确路径、查看计划或批准清理。`--plan` 默认仅预览，绝不执行删除；`--apply` 需要**新的、明确的逐项批准**及本机交互终端输入 `DELETE`，社区验收禁止使用。
@@ -40,3 +40,11 @@ v1.3.0 于 2026-10-16 在**一台** Mac mini（macOS 26.5.2，Python 3.14.7）�
 - [发布前待办](docs/RELEASE-CHECKLIST.md)
 
 **v1.3.1 修复 [Issue #1](https://github.com/cookyecat/maclean-skill/issues/1)**；安装后请重新验证 G0–G7。
+
+## v1.4.0 应用缓存目录（开发候选）
+从默认技术缓存扩展到经过精确列举的应用缓存、日志和更新安装包。包括飞书用户
+Profile 与 Chrome Default 下确切的 Service Worker CacheStorage 叶目录，
+不读取个人聊天、历史记录、Cookies、IndexedDB 或 Local Storage。
+此类缓存可能支撑离线功能，所以 AI 应区分可重新下载与可能存在数据损失风险。
+可让用户一次确认 AI 提出的批量清理计划，而不是自己逐目录分类；
+安全否决、真实删除前的终端确认继续有效。稳定发布版仍是 v1.3.1。
