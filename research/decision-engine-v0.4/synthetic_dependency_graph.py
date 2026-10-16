@@ -45,6 +45,8 @@ def collect(root: pathlib.Path, *, app_family: str = "puppeteer") -> dict:
     """Only single-level directory listing under synthetic browsers and clients."""
     if app_family not in ("puppeteer", "playwright"):
         raise FixtureBoundaryError("no general-purpose browser filesystem scanner")
+    if app_family not in ("puppeteer", "playwright"):
+        raise FixtureBoundaryError("no general-purpose browser filesystem scanner")
     root=_verify_root(root)
     browsers=_bounded_dir(root,"browsers")
     clients=_bounded_dir(root,"clients")
