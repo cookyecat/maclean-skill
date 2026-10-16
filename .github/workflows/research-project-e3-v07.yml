@@ -1,0 +1,50 @@
+name: Research v0.7 Exact-Project E3 and Attestation Boundaries
+on:
+  push:
+    branches:
+      - 'research/decision-engine-project-e3-v0.7'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v0.7/**'
+      - '.github/workflows/research-project-e3-v07.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-project-fixtures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Compile bounded research modules
+        run: python3 -m compileall -q research/decision-engine-v0.7
+      - name: Test exact-client selection, unknown coverage and attestation freshness
+        working-directory: research/decision-engine-v0.7
+        run: python3 -m unittest -v test_project_e3_v07
+      - name: Ensure partial coverage cannot authorize cleanup
+        working-directory: research/decision-engine-v0.7
+        run: |
+          python3 - <<'PY'
+          from project_witness import fixture,scan
+          from fixture_attestation import FixtureWitnessIssuer,digest
+          import secrets
+          with fixture(unselected=True) as root:
+              w=scan(root,['client-ALPHA'])
+              assert w['unknown_unread_link_targets']==1
+              assert w['real_client_universe_complete'] is False
+              assert w['safe_to_clean'] is False
+              assert w['deletion_authorized'] is False
+              issuer=FixtureWitnessIssuer()
+              pid=digest({'synthetic':True})
+              nonce=secrets.token_hex(16)
+              e=issuer.issue(root,['client-ALPHA'],plan_digest=pid,request_nonce=nonce)
+              v=issuer.verify_fresh(e,root,['client-ALPHA'],expected_plan_digest=pid,expected_nonce=nonce)
+              assert v['approved_cleanup_targets']==[]
+              assert v['deletion_authorized'] is False
+              assert v['production_cryptographic_trust_boundary'] is False
+              print('partial source coverage, planned batch and trusted E3 authority remain unavailable')
+          PY
+      - name: No provider API, user project, native install or real deletion in CI
+        run: echo "Synthetic files only; no real project access, browser downloads or apply."
