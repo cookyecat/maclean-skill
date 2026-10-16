@@ -159,13 +159,16 @@ def lab():
         npm_clean(r)
         after_clean=cacache.exists()
         npx_remains=second.is_dir() and b in native_npx_keys(r)
+        npm_ver=run_native(r,"npm",["--version"]).stdout.strip()
+        uv_ver=run_native(r,"uv",["--version"]).stdout.strip()
         uv_prune(r)
         # uv cache clean also executes only on our private fixture.
         uv_clean(r)
+        uv_cache_remains=(r/"uv-cache").is_dir()
         return {
           "schema":"maclean-v1.0-isolated-native-results",
-          "npm_version":run_native(r,"npm",["--version"]).stdout.strip(),
-          "uv_version":run_native(r,"uv",["--version"]).stdout.strip(),
+          "npm_version":npm_ver,
+          "uv_version":uv_ver,
           "npx_initial_keys":len(before),"npx_exact_removed":removed,
           "npx_other_key_survived":b in after,
           "npm_cacache_seeded":before_content,
@@ -173,6 +176,7 @@ def lab():
           "npm_cacache_after_clean":after_clean,
           "npm_npx_survived_cacache_clean":npx_remains,
           "uv_prune_exit_ok":True,"uv_clean_exit_ok":True,
+          "uv_cache_directory_remains_after_clean":uv_cache_remains,
           "outside_fixture_touched":False,
           "real_user_cache_modified":False,
           "production_operation_adapter_verified":False,
