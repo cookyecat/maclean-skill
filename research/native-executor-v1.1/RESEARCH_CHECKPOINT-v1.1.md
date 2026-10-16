@@ -32,3 +32,7 @@ The old v1.4 process guard is NOT overwritten; a *separate native operation exec
 Conduct concurrent real native npm operations **only in owner-private disposable cache** and measure disruption; implement dirfd/no-follow safety for preflight or explicitly document trust assumptions of self-owned HOME and native CLI; decide whether npm full clean should be default or optional in active npm situations. Integrate user-facing review with one approved batch and no technical parameter editing. Plan a separate explicitly authorized single-target live pilot, with before/after APFS measurement and no implicit prior approval.
 
 **Do not interpret research PR approval or test mock approval as user consent for real deletion.**
+
+### Final acceptance update
+
+Latest Mac draft **not approved**: `/tmp/maclean-v11-final-verified.G4hH2q/unapproved-native-batch.json`, SHA-256 `c809241bd9530ffe05542d959550a7aa99636a71c7654c36e8785dc87a06ba09`; real npm preview PASS, 1 default / 2,356.8 MiB gross, 10 npx OPTIONAL / 663.2 MiB gross (preview-only). Zero real deletion. Linux GitHub initial identity test found instant inode reuse after delete/recreate; fixed by device + inode + birthtime/ctime + owner. Mac 24/24 and latest GitHub research workflow PASS.
