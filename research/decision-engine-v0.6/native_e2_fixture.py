@@ -56,6 +56,7 @@ def run_lab(package_root:pathlib.Path) -> dict:
         client.mkdir(mode=0o700)
         # Copy only the known, pinned PUBLISHER metadata from previous isolated package.
         shutil.copyfile(original_manifest,client/"browsers.json")
+        shutil.copyfile(package/"pkg/node_modules/playwright-core/package.json",client/"package.json")
         (links/"fixture-client").write_text(str(client))
         (reg/"chromium-1248").mkdir(mode=0o700)
         # This fixture is intentionally phony; no Chrome browser was downloaded.
