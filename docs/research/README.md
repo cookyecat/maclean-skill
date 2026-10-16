@@ -1,5 +1,9 @@
 # MacLean · Research Architecture Baseline
 
+> **产品理念（冻结）**：**用户不用懂技术，AI 能判断得准，程序能删得安全。**
+>
+> 详见 [PRODUCT-PHILOSOPHY-v1.md](PRODUCT-PHILOSOPHY-v1.md)。它是本研究分支的最高层产品约束：用户体验、AI 决策与执行器安全缺一不可。
+
 本目录专门固定 MacLean 从“能扫描、能清理”到“AI 能正确决策、普通用户只需确认一次”的研究设计。
 
 ## 已冻结的两张框图
