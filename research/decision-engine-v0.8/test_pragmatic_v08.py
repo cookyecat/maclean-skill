@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest.mock import patch
 import json,os,sys,tempfile,types,unittest
 from pragmatic_policy import assess,decide,PolicyError
-from preview_batch import create_preview,PreviewDenied
+from preview_batch import create_preview,PreviewDenied,catalog_fingerprint
 
 def row(id="uv_cache-001",kind="uv_cache",status="REVIEW",size=200.0,risk="",
         app=None,path="~/.cache/uv",blocks=None):
@@ -129,7 +129,8 @@ class PlanTests(unittest.TestCase):
         self.addCleanup(self.subprocess.stop)
 
     def runpreview(self,extra=None,excluded=None):
-        return create_preview(self.dir,self.dir,extra or [],excluded or [])
+        return create_preview(self.dir,self.dir,extra or [],excluded or [],
+                              catalog_fingerprint(triage(self.rows)))
 
     def test_default_plan_is_unapproved_and_exact(self):
         result=self.runpreview()
@@ -173,6 +174,20 @@ class PlanTests(unittest.TestCase):
         result=self.runpreview()
         self.assertEqual(result["selected_count"],0)
         self.assertEqual(result["deferred_at_second_check"],["uv_cache-001"])
+
+    def test_optional_without_previous_catalog_identity_refused(self):
+        with self.assertRaises(PreviewDenied):
+            create_preview(self.dir,self.dir,["puppeteer_cache-002"],[],None)
+
+    def test_changed_catalog_mapping_refused_even_same_id(self):
+        old=catalog_fingerprint(triage(self.rows))
+        self.rows[1]["path"]="~/.cache/changed-option"
+        with self.assertRaises(PreviewDenied):
+            create_preview(self.dir,self.dir,["puppeteer_cache-002"],[],old)
+
+    def test_review_digest_is_present_with_default_suggestion(self):
+        result=self.runpreview()
+        self.assertEqual(len(result["candidate_identity_sha256"]),64)
 
     def test_original_executor_refusal_stops_publication(self):
         with patch("preview_batch.subprocess.run",return_value=types.SimpleNamespace(returncode=2,stdout="ERROR")):
