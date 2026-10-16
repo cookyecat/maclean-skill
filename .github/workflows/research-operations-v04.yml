@@ -1,0 +1,43 @@
+name: Research v0.4 app-scoped operation contracts
+on:
+  push:
+    branches:
+      - 'research/decision-engine-operations-v0.4'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v0.4/**'
+      - '.github/workflows/research-operations-v04.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-method-boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Static Python check
+        run: python3 -m compileall -q research/decision-engine-v0.4
+      - name: App-specific operation and privacy negative controls
+        working-directory: research/decision-engine-v0.4
+        run: python3 -m unittest -v test_operations_v04
+      - name: Research preview must not authorize deletion
+        working-directory: research/decision-engine-v0.4
+        run: |
+          python3 synthetic_dependency_graph.py > /tmp/maclean-v04-fixture-preview.json
+          python3 - <<'PY'
+          import json
+          p=json.load(open('/tmp/maclean-v04-fixture-preview.json'))
+          assert p['synthetic_only'] is True
+          assert p['no_real_cache_read'] and p['no_files_deleted']
+          assert p['graph']['synthetic'] is True
+          assert all(not v['deletion_authorized'] and not v['production_eligible']
+                     for v in p['previews'].values())
+          assert any('EXACT_APPROVED_SET_MISMATCH' in v['flags']
+                     for v in p['previews'].values())
+          print('synthetic operations remain non-executable and exact scope enforced')
+          PY
+      - name: No production cleanup or provider calls
+        run: echo "Only synthetic disposable fixtures; no API keys, no real user caches and no apply."
