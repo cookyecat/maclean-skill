@@ -1,0 +1,43 @@
+name: Research AI decision evaluator
+on:
+  push:
+    branches:
+      - 'research/decision-engine-eval-v0.1'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaluator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Research evaluator unit tests
+        run: python3 -m unittest discover -s research/decision-engine-v0.1 -p 'test_*.py' -v
+      - name: Illustrative fixture must pass (not model performance)
+        run: |
+          python3 research/decision-engine-v0.1/evaluate.py \
+            --cases research/decision-engine-v0.1/cases.synthetic.json \
+            --predictions research/decision-engine-v0.1/predictions.illustrative.json
+      - name: Red-team unsafe predictions must fail as designed
+        shell: bash
+        run: |
+          set +e
+          python3 research/decision-engine-v0.1/evaluate.py \
+            --cases research/decision-engine-v0.1/cases.synthetic.json \
+            --predictions research/decision-engine-v0.1/predictions.redteam.json > /tmp/redteam-report.json
+          rc=$?
+          if [[ "$rc" -ne 3 ]]; then
+            echo "Expected unsafe red-team evaluator exit code 3; got $rc"
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          report=json.load(open('/tmp/redteam-report.json'))
+          assert report["release_quality_gate"]=="FAIL"
+          assert report["critical_false_recommendations"]==4
+          assert report["gate_violations"]==5
+          print('Red-team negative control correctly detected')
+          PY
