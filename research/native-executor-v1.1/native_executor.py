@@ -20,8 +20,8 @@ SHA256_ORIGINAL={
     "triage_home.py":"af0ef5a5759f8147e33ae451f5b1be1fec410776ce6876c73760e3a07a8f2ccc",
 }
 OPERATIONS={
-    "npm.cache.clean_all":("npm_cache","~/.npm/_cacache","npm"),
-    "uv.cache.prune":("uv_cache","~/.cache/uv","uv"),
+    "npm.cache.clean_all":("npm_cache","~/.npm/_cacache","Npm"),
+    "uv.cache.prune":("uv_cache","~/.cache/uv","Uv"),
 }
 NPX_PREFIX="~/.npm/_npx/"
 HEX_KEY=re.compile(r"[a-f0-9]{16}\Z")
