@@ -17,6 +17,7 @@ AUTO: dict[tuple[str,str],tuple[str,str]] = {
     ("app_log","diagnostic"):("application diagnostic logs","Clearing logs removes older debugging history; the app may create new logs"),
     ("app_update","updater_redownload"):("old application update download","The application may need to download the updater again"),
     ("app_cache","updater_redownload"):("application updater cache","Future application updates may download packages again"),
+    ("app_cache","editor_rebuild"):("editor UI/cache data","Editor may rebuild/index on restart and temporarily use more resources"),
 }
 OPTIONAL: dict[tuple[str,str],tuple[str,str]] = {
     ("npx_install",""):("downloaded npx execution packages","Commands may require a fresh install; offline tools may not start"),
@@ -25,7 +26,6 @@ OPTIONAL: dict[tuple[str,str],tuple[str,str]] = {
     ("cargo_target",""):("Rust compiled project output","Rebuilding can be expensive; project root must satisfy the original Git safety gate"),
     ("codex_daemon_old",""):("older Codex daemon release","Fallback may require re-download; original executor preserves current + two newest builds"),
     ("old_version",""):("older Cursor Agent build","Fallback capability may be lost; original executor preserves newest builds"),
-    ("app_cache","editor_rebuild"):("editor UI/cache data","Editor may rebuild/index on restart and temporarily use more resources"),
     ("app_cache","launcher_rebuild"):("application launcher cache","Launcher may rebuild the data and start more slowly"),
     ("app_cache","streaming_redownload"):("streaming playback cache","Media will need re-download, offline playback may no longer work"),
 }
