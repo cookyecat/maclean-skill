@@ -44,7 +44,7 @@ class TestDecisionEvaluator(unittest.TestCase):
         prediction=copy.deepcopy(self.correct[0])
         prediction["evidence_ids"]=["made-up-document"]
         violations=preflight_violation(self.cases[0],prediction)
-        self.assertIn("UNVERIFIED_EVIDENCE_REFERENCE",violations)
+        self.assertIn("UNKNOWN_EVIDENCE_REFERENCE",violations)
 
     def test_active_and_protected_never_bypass_gate(self):
         idx={c["id"]:c for c in self.cases}
@@ -80,7 +80,7 @@ class TestDecisionEvaluator(unittest.TestCase):
 
     def test_case_missing_provenance_fails(self):
         bad=copy.deepcopy(self.cases)
-        bad[0]["available_evidence_ids"]=[]
+        bad[0]["evidence_ids"]=[]
         with self.assertRaises(InputError):
             evaluate(bad,self.correct)
 
