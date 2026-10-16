@@ -213,8 +213,11 @@ def compare_live(entries,rows,resolve,check_type,home):
         fresh=allowed(now[e["id"]])
         if (fresh is None or fresh["path"]!=e["path"] or fresh["kind"]!=e["kind"]
                 or fresh["operation"]!=e["operation"] or fresh["tier"]!=e["tier"]
-                or fresh["preview_only"]!=e["preview_only"]):
+                or fresh["preview_only"]!=e["preview_only"]
+                or fresh["risk"]!=e["risk"]):
             stop("selected target identity, risk or method changed; require new review")
+        if abs(fresh["size_mib"]-e["size_mib"])>max(50.0,0.25*e["size_mib"]):
+            stop("candidate allocated size changed materially; refresh and review")
         if now[e["id"]]["status"] not in ("ACTIVE","REVIEW"):stop("new safety block")
         target=check_paths(e,resolve,check_type,home)
         if fs_identity(target)!=e["target_identity"]:
@@ -301,6 +304,15 @@ def preview(skill_root,planpath,chosen):
             "all_real_paths_validated":True,"approval_present":False,
             "real_execution_performed":False,"estimated_net_reclaim_mib":None}
 
+def append_journal(path,record):
+    if path.is_symlink() or not path.is_file():stop("journal file is unavailable")
+    fd=os.open(path,os.O_WRONLY|os.O_APPEND|os.O_NOFOLLOW)
+    try:
+        os.write(fd,canonical(record)+b"\n")
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
 def apply(skill_root,planpath,chosen,approval):
     # NEVER called for user's real cache during research/this task.
     plan,digest=parse_plan(planpath)
@@ -312,28 +324,47 @@ def apply(skill_root,planpath,chosen,approval):
     live=fresh_triage(scripts)
     compare_live(entries,live,resolve,check_type,pathlib.Path.home())
     human_confirm(digest,chosen)
-    with tempfile.TemporaryDirectory(prefix="maclean-v11-native-config-") as directory:
-        context=pathlib.Path(directory).resolve();context.chmod(0o700)
-        for cfg in ("empty-user.npmrc","empty-global.npmrc"):
-            (context/cfg).write_text("")
-            (context/cfg).chmod(0o600)
-        (context/"logs").mkdir(mode=0o700)
-        before=shutil.disk_usage(pathlib.Path.home()).free
-        receipts=[]
-        # Sequential per-target revalidation; stop immediately on error.
-        for e in entries:
-            live=fresh_triage(scripts)
-            compare_live([e],live,resolve,check_type,pathlib.Path.home())
-            target=check_paths(e,resolve,check_type,pathlib.Path.home())
-            st=target.lstat()
-            execute_native(e["operation"],target,context)
-            # Persist only type and identity; no false precise reclaim claim.
-            receipts.append({"id":e["id"],"method":e["operation"],"preflight_inode":st.st_ino,
-                             "native_command_returned_success":True})
-        after=shutil.disk_usage(pathlib.Path.home()).free
-        return {"schema":"maclean-v1.1-apply-receipt","success_count":len(receipts),
-                "net_apfs_free_bytes_delta":after-before,
-                "warning":"APFS delta includes concurrent writes; may differ from deleted allocation"}
+    private_dir(planpath.parent)
+    lockfile=planpath.parent/("native-apply-"+digest[:16]+".lock")
+    journal=planpath.parent/("native-apply-"+digest[:16]+".jsonl")
+    # Refuse duplicate/parallel execution of an already confirmed plan.
+    write_private(lockfile,(digest+"\n").encode())
+    write_private(journal,canonical({"event":"START","plan_sha256":digest,
+                                    "selected_ids":chosen,"utc":datetime.now(timezone.utc).isoformat()})+b"\n")
+    try:
+        with tempfile.TemporaryDirectory(prefix="maclean-v11-native-config-") as directory:
+            context=pathlib.Path(directory).resolve();context.chmod(0o700)
+            for cfg in ("empty-user.npmrc","empty-global.npmrc"):
+                (context/cfg).write_text("")
+                (context/cfg).chmod(0o600)
+            (context/"logs").mkdir(mode=0o700)
+            before=shutil.disk_usage(pathlib.Path.home()).free
+            receipts=[]
+            for e in entries:
+                live=fresh_triage(scripts)
+                compare_live([e],live,resolve,check_type,pathlib.Path.home())
+                target=check_paths(e,resolve,check_type,pathlib.Path.home())
+                if fs_identity(target)!=e["target_identity"]:
+                    stop("selected inode changed immediately before native command")
+                append_journal(journal,{"event":"BEFORE_NATIVE","id":e["id"],
+                                       "method":e["operation"]})
+                execute_native(e["operation"],target,context)
+                receipts.append({"id":e["id"],"method":e["operation"],
+                                 "native_command_returned_success":True})
+                append_journal(journal,{"event":"SUCCESS","id":e["id"],
+                                       "method":e["operation"]})
+            after=shutil.disk_usage(pathlib.Path.home()).free
+            outcome={"schema":"maclean-v1.1-apply-receipt","success_count":len(receipts),
+                     "net_apfs_free_bytes_delta":after-before,
+                     "warning":"APFS delta includes concurrent writes; may differ from deleted allocation"}
+            append_journal(journal,{"event":"COMPLETE","success_count":len(receipts),
+                                    "net_apfs_free_bytes_delta":after-before})
+            return outcome
+    except Exception as err:
+        append_journal(journal,{"event":"HALTED","error_type":type(err).__name__,
+                                "review_required":True})
+        raise
+    # Deliberately retain lock and journal after success/failure: never silently replay a plan.
 
 def main():
     cli=argparse.ArgumentParser()
