@@ -31,6 +31,7 @@ class V11(unittest.TestCase):
         def target_type(path):
             st=path.lstat()
             return (st.st_dev,st.st_ino)
+        self.real_original=ex.original
         for ctx in (patch.object(ex,"original",return_value=(self.home,resolve,target_type)),
                     patch.object(ex,"fresh_triage",side_effect=lambda _:self.rows),
                     patch.object(ex.pathlib.Path,"home",return_value=self.home)):
@@ -110,9 +111,47 @@ class V11(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="fake-skill-") as folder:
             p=pathlib.Path(folder);(p/"scripts").mkdir()
             (p/"scripts"/"verify_bundle.py").write_text("print('ok')")
-            from unittest.mock import patch as pp
-            with pp.stopall if False else pp.object(ex,"original",wraps=ex.original):
-                pass
+            with self.assertRaises(ex.Denied):
+                self.real_original(p)
+
+    def test_expired_draft_denied(self):
+        from datetime import datetime,timezone,timedelta
+        doc=self.build()
+        doc["created_at_utc"]=(datetime.now(timezone.utc)-timedelta(hours=5)).isoformat()
+        self.plan.write_text(json.dumps(doc))
+        with self.assertRaises(ex.Denied):
+            ex.preview(self.home,self.plan,["npm1"])
+
+    def test_replaced_symlink_denied(self):
+        self.build()
+        shutil.rmtree(self.cache)
+        self.cache.symlink_to(self.home,target_is_directory=True)
+        with self.assertRaises(ex.Denied):
+            ex.preview(self.home,self.plan,["npm1"])
+
+    def test_selection_approval_mismatch_denied(self):
+        self.build();self.approve(["npx1"])
+        with self.assertRaises(ex.Denied):
+            ex.apply(self.home,self.plan,["npm1"],self.approval)
+        self.assertTrue(self.cache.exists())
+
+    def test_denied_false_approval(self):
+        self.build();self.approve(["npm1"])
+        d=json.loads(self.approval.read_text());d["approved"]=False
+        self.approval.write_text(json.dumps(d))
+        with self.assertRaises(ex.Denied):
+            ex.apply(self.home,self.plan,["npm1"],self.approval)
+
+    def test_native_env_overrides_hostile_npm_cache(self):
+        with tempfile.TemporaryDirectory(prefix="env-test-") as directory:
+            context=pathlib.Path(directory).resolve();context.chmod(0o700)
+            with patch.dict(ex.os.environ,{"npm_config_cache":"/tmp/hostile",
+                                         "NPM_CONFIG_GLOBALCONFIG":"/tmp/hostile"}):
+                environment=ex.native_env(context,"npm.cache.clean_all",self.cache)
+            self.assertEqual(environment["NPM_CONFIG_CACHE"],str(self.home/".npm"))
+            self.assertNotEqual(environment["NPM_CONFIG_GLOBALCONFIG"],"/tmp/hostile")
+            self.assertNotEqual(environment["NPM_CONFIG_USERCONFIG"],environment["NPM_CONFIG_GLOBALCONFIG"])
+
     def test_unknown_target_method_refused(self):
         self.build()
         x=json.loads(self.plan.read_text())
