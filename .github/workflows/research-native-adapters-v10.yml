@@ -1,0 +1,40 @@
+name: Research v1.0 Disposable Native Cache Adapters
+on:
+  push:
+    branches:
+      - 'research/decision-engine-native-adapters-v1.0'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v1.0/**'
+      - '.github/workflows/research-native-adapters-v10.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Static compiler
+        run: python3 -m compileall -q research/decision-engine-v1.0
+      - name: Scope, method and disposal-regression tests
+        working-directory: research/decision-engine-v1.0
+        run: python3 -m unittest -v test_method_contract_v10 test_native_v10
+      - name: CI cannot authorize real cleanup
+        working-directory: research/decision-engine-v1.0
+        run: |
+          python3 - <<'PY'
+          from native_method_contract import compile_method
+          x=compile_method({'kind':'npm_cache','exact_path':'~/.npm/_cacache',
+                            'operation_id':'npm.cache.clean_all',
+                            'suggested_selection':'DEFAULT','method_adapter_verified':False,
+                            'executability':'REQUIRES_SEPARATE_OPERATION_ADAPTER'})
+          assert not x['executable'] and not x['production_method_approved']
+          assert not x['user_approved'] and x['estimated_physical_reclaim_mib'] is None
+          print('Native research plan remains non-executable')
+          PY
+      - name: Version-specific native tests
+        run: echo 'Full macOS npm 12.2.0 / uv 0.12.5 disposable native acceptance was run on authorized Mac; skip on runners lacking tools.'
