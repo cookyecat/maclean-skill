@@ -41,8 +41,10 @@ def _bounded_dir(root: pathlib.Path, name: str) -> pathlib.Path:
         raise FixtureBoundaryError("invalid fixed fixture directory")
     return d
 
-def collect(root: pathlib.Path) -> dict:
+def collect(root: pathlib.Path, *, app_family: str = "puppeteer") -> dict:
     """Only single-level directory listing under synthetic browsers and clients."""
+    if app_family not in ("puppeteer", "playwright"):
+        raise FixtureBoundaryError("no general-purpose browser filesystem scanner")
     root=_verify_root(root)
     browsers=_bounded_dir(root,"browsers")
     clients=_bounded_dir(root,"clients")
@@ -76,7 +78,8 @@ def collect(root: pathlib.Path) -> dict:
             raise FixtureBoundaryError("missing browser version referenced by synthetic client")
         mapping[obj["client_id"]]=obj["requires"]
     graph={"schema":"maclean-fixture-graph-v0.4","synthetic":True,
-           "complete_client_universe":True,"installed_browsers":installed,"clients":mapping}
+           "complete_client_universe":True,"app_family":app_family,
+           "installed_browsers":installed,"clients":mapping}
     validate_graph(graph)
     refs=set().union(*(set(v) for v in mapping.values())) if mapping else set()
     graph["synthetic_orphan_ids"]=sorted(set(installed)-refs)
@@ -101,13 +104,14 @@ def disposable_fixture():
 def demo():
     from operation_registry import assess
     with disposable_fixture() as fixture:
-        graph=collect(fixture)
+        graph=collect(fixture,app_family="puppeteer")
+        graph_pw=collect(fixture,app_family="playwright")
         # No file is removed by either research preview.
         previews={
             "targeted_orphan":assess("puppeteer.browsers.uninstall_build",graph,["chrome-0999"],target="chrome-0999"),
             "broad_clear":assess("puppeteer.browsers.clear_all",graph,["chrome-0999"]),
             "referenced_uninstall":assess("puppeteer.browsers.uninstall_build",graph,["chrome-1111"],target="chrome-1111"),
-            "playwright_unused_gc":assess("playwright.browsers.gc_unused",graph,["chrome-0999"]),
+            "playwright_unused_gc":assess("playwright.browsers.gc_unused",graph_pw,["chrome-0999"]),
         }
         return {"synthetic_only":True,"graph":graph,"previews":previews,
                 "no_real_cache_read":True,"no_files_deleted":True}
