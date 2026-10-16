@@ -1,0 +1,39 @@
+name: Research v0.8 Pragmatic Cache Policy
+on:
+  push:
+    branches:
+      - 'research/decision-engine-pragmatic-v0.8'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v0.8/**'
+      - '.github/workflows/research-pragmatic-v08.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Static Python verification
+        run: python3 -m compileall -q research/decision-engine-v0.8
+      - name: Test catalog policy and user-selection safety
+        working-directory: research/decision-engine-v0.8
+        run: python3 -m unittest -v test_pragmatic_v08
+      - name: No approval and no apply path
+        working-directory: research/decision-engine-v0.8
+        run: |
+          python3 - <<'PY'
+          import inspect,pragmatic_policy,preview_batch
+          body=inspect.getsource(preview_batch)
+          assert '"user_approved":False' in body
+          assert '"--apply"' not in body
+          assert 'PREVIEW ONLY; NO FILES MODIFIED.' in body
+          assert '"OPTIONAL"' in inspect.getsource(pragmatic_policy)
+          print('batch preview is unapproved and non-executable')
+          PY
+      - name: No Mac access or real cleanup in CI
+        run: echo "Offline fixtures only; live Mac v1.4 original preview separately verified."
