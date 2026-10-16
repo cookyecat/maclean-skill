@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.env.*
+*.log
+*.sqlite
+*.db
+**/*secrets*
+.local/
+.venv/
+build/
+dist/
+.coverage
+.pytest_cache/
+reports/

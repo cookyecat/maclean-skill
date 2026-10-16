@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "user_approved": false,
+  "targets": [
+    {
+      "path": "~/.npm/_cacache",
+      "kind": "npm_cache",
+      "reason": "EXAMPLE ONLY: npm downloaded package cache, can re-download later",
+      "requires_quit": ["Npm"]
+    },
+    {
+      "path": "~/.cache/uv",
+      "kind": "uv_cache",
+      "reason": "EXAMPLE ONLY: uv wheel/build cache; downloads would be repeated",
+      "requires_quit": ["Uv"]
+    },
+    {
+      "path": "~/Library/Application Support/BambuStudio/log",
+      "kind": "log",
+      "reason": "EXAMPLE ONLY: diagnostic logs, after BambuStudio is closed",
+      "requires_quit": ["BambuStudio"]
+    }
+  ]
+}

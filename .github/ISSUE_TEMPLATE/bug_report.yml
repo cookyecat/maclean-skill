@@ -1,0 +1,33 @@
+name: Bug report (sanitized)
+description: Report a reproducible non-security bug using synthetic data; never upload private files.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "For privacy or security vulnerabilities use the private channel in SECURITY.md. Do not paste raw paths, user names, machine IDs, tokens or process commands."
+  - type: input
+    id: version
+    attributes:
+      label: Skill version
+      placeholder: v1.3.x
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: macOS / Python versions (no machine identifiers)
+      placeholder: macOS xx.x / Python 3.x
+  - type: textarea
+    id: synthetic-steps
+    attributes:
+      label: Synthetic steps to reproduce
+      description: Use a disposable fixture and redact identifying data.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected vs observed result
+    validations:
+      required: true

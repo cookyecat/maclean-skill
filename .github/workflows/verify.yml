@@ -1,0 +1,23 @@
+name: Static source and package integrity
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  static-integrity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Validate source manifest
+        run: python3 skill/macos-disk-auditor/scripts/verify_bundle.py --json
+      - name: Validate Python syntax
+        run: python3 -m compileall -q skill/macos-disk-auditor/scripts
+      - name: Verify original asset hash
+        run: python3 tools/check_release_integrity.py
+      - name: Policy reminder
+        run: echo 'STATIC ONLY: Mac G0-G7 privacy acceptance must be run separately before publication.'
