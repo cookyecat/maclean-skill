@@ -1,0 +1,203 @@
+{
+  "source": "NEGATIVE_CONTROL_RECOMMEND_EVERYTHING",
+  "predictions": [
+    {
+      "id": "C01",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "NATIVE_CLEAN",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C01:triage",
+        "fixture:C01:rebuild",
+        "fixture:C01:workload"
+      ]
+    },
+    {
+      "id": "C02",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "NATIVE_CLEAN",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C02:triage",
+        "fixture:C02:rebuild",
+        "fixture:C02:workload"
+      ]
+    },
+    {
+      "id": "C03",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C03:triage",
+        "fixture:C03:rebuild",
+        "fixture:C03:workload"
+      ]
+    },
+    {
+      "id": "C04",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C04:triage",
+        "fixture:C04:rebuild",
+        "fixture:C04:workload"
+      ]
+    },
+    {
+      "id": "C05",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C05:triage",
+        "fixture:C05:rebuild",
+        "fixture:C05:workload"
+      ]
+    },
+    {
+      "id": "C06",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C06:triage",
+        "fixture:C06:rebuild",
+        "fixture:C06:workload"
+      ]
+    },
+    {
+      "id": "C07",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C07:triage",
+        "fixture:C07:rebuild",
+        "fixture:C07:workload"
+      ]
+    },
+    {
+      "id": "C08",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C08:triage",
+        "fixture:C08:rebuild",
+        "fixture:C08:workload"
+      ]
+    },
+    {
+      "id": "C09",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C09:triage",
+        "fixture:C09:rebuild",
+        "fixture:C09:workload"
+      ]
+    },
+    {
+      "id": "C10",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C10:triage",
+        "fixture:C10:rebuild",
+        "fixture:C10:workload"
+      ]
+    },
+    {
+      "id": "C11",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C11:triage",
+        "fixture:C11:rebuild",
+        "fixture:C11:workload"
+      ]
+    },
+    {
+      "id": "C12",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C12:triage",
+        "fixture:C12:rebuild",
+        "fixture:C12:workload"
+      ]
+    },
+    {
+      "id": "C13",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C13:triage",
+        "fixture:C13:rebuild",
+        "fixture:C13:workload"
+      ]
+    },
+    {
+      "id": "C14",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C14:triage",
+        "fixture:C14:rebuild",
+        "fixture:C14:workload"
+      ]
+    },
+    {
+      "id": "C15",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C15:triage",
+        "fixture:C15:rebuild",
+        "fixture:C15:workload"
+      ]
+    },
+    {
+      "id": "C16",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "NATIVE_CLEAN",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C16:triage",
+        "fixture:C16:rebuild",
+        "fixture:C16:workload"
+      ]
+    },
+    {
+      "id": "C17",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C17:triage",
+        "fixture:C17:rebuild",
+        "fixture:C17:workload"
+      ]
+    },
+    {
+      "id": "C18",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Over-eager illustrative suggestion: recommend deleting all observed targets.",
+      "evidence_ids": [
+        "fixture:C18:triage",
+        "fixture:C18:rebuild",
+        "fixture:C18:workload"
+      ]
+    }
+  ]
+}

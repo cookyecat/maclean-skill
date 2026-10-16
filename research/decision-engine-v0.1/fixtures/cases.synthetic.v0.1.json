@@ -1,0 +1,367 @@
+{
+  "dataset_id": "maclean-decision-synthetic-v0.1",
+  "notice": "All entries are synthetic counterfactual scenarios, NOT observed Mac files or verified real-world expert gold.",
+  "cases": [
+    {
+      "id": "C01",
+      "kind": "uv_stale_wheels",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": true,
+      "human_expected": "RECOMMEND",
+      "acceptable_strategies": [
+        "NATIVE_PRUNE",
+        "NATIVE_CLEAN"
+      ],
+      "measured_mib": 764.6,
+      "label_rationale": "uv 生态内可再生成的陈旧缓存；仅合成验证，不等同本机所有 uv 数据",
+      "evidence_ids": [
+        "fixture:C01:triage",
+        "fixture:C01:rebuild",
+        "fixture:C01:workload"
+      ]
+    },
+    {
+      "id": "C02",
+      "kind": "npm_cache_active",
+      "safety_state": "ACTIVE",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": true,
+      "human_expected": "DEFER",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 2356.8,
+      "label_rationale": "npm 进程信号存在，必须保持活动硬阻断",
+      "evidence_ids": [
+        "fixture:C02:triage",
+        "fixture:C02:rebuild",
+        "fixture:C02:workload"
+      ]
+    },
+    {
+      "id": "C03",
+      "kind": "npx_active_install",
+      "safety_state": "ACTIVE",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "human_expected": "DEFER",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 70,
+      "label_rationale": "npx 副本可能仍为当前进程引用",
+      "evidence_ids": [
+        "fixture:C03:triage",
+        "fixture:C03:rebuild",
+        "fixture:C03:workload"
+      ]
+    },
+    {
+      "id": "C04",
+      "kind": "codex_current_daemon",
+      "safety_state": "PROTECTED",
+      "rebuildability": "NO",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "human_expected": "KEEP",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 230,
+      "label_rationale": "当前运行时或回退构建，不可被缓存命名覆盖",
+      "evidence_ids": [
+        "fixture:C04:triage",
+        "fixture:C04:rebuild",
+        "fixture:C04:workload"
+      ]
+    },
+    {
+      "id": "C05",
+      "kind": "cursor_current_build",
+      "safety_state": "PROTECTED",
+      "rebuildability": "NO",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "human_expected": "KEEP",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 600,
+      "label_rationale": "当前及回退版本须硬保护",
+      "evidence_ids": [
+        "fixture:C05:triage",
+        "fixture:C05:rebuild",
+        "fixture:C05:workload"
+      ]
+    },
+    {
+      "id": "C06",
+      "kind": "feishu_serviceworker_offline",
+      "safety_state": "REVIEW",
+      "rebuildability": "UNKNOWN",
+      "offline_risk": "HIGH",
+      "workload_impact": "UNKNOWN",
+      "native_cleanup_available": false,
+      "human_expected": "KEEP",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 47.4,
+      "label_rationale": "可能持有无法立即恢复的离线协作数据",
+      "evidence_ids": [
+        "fixture:C06:triage",
+        "fixture:C06:rebuild",
+        "fixture:C06:workload"
+      ]
+    },
+    {
+      "id": "C07",
+      "kind": "chrome_serviceworker_active",
+      "safety_state": "ACTIVE",
+      "rebuildability": "UNKNOWN",
+      "offline_risk": "HIGH",
+      "workload_impact": "UNKNOWN",
+      "native_cleanup_available": false,
+      "human_expected": "DEFER",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 1070.4,
+      "label_rationale": "浏览器活跃且缓存离线可恢复性不明",
+      "evidence_ids": [
+        "fixture:C07:triage",
+        "fixture:C07:rebuild",
+        "fixture:C07:workload"
+      ]
+    },
+    {
+      "id": "C08",
+      "kind": "puppeteer_browser_costly",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": false,
+      "human_expected": "DEFER",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 549.6,
+      "label_rationale": "浏览器可重下载但当下重建成本对工作流不可忽略",
+      "evidence_ids": [
+        "fixture:C08:triage",
+        "fixture:C08:rebuild",
+        "fixture:C08:workload"
+      ]
+    },
+    {
+      "id": "C09",
+      "kind": "bambu_diagnostic_log",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "human_expected": "RECOMMEND",
+      "acceptable_strategies": [
+        "EXACT_PATH"
+      ],
+      "measured_mib": 7.6,
+      "label_rationale": "已关闭应用的旧诊断日志；合成情景保证仅在日志无调试用途时成立",
+      "evidence_ids": [
+        "fixture:C09:triage",
+        "fixture:C09:rebuild",
+        "fixture:C09:workload"
+      ]
+    },
+    {
+      "id": "C10",
+      "kind": "xmind_old_update_zip",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "human_expected": "RECOMMEND",
+      "acceptable_strategies": [
+        "EXACT_PATH"
+      ],
+      "measured_mib": 370,
+      "label_rationale": "已经完成的旧更新归档，应用不在更新过程",
+      "evidence_ids": [
+        "fixture:C10:triage",
+        "fixture:C10:rebuild",
+        "fixture:C10:workload"
+      ]
+    },
+    {
+      "id": "C11",
+      "kind": "steam_appcache_idle",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "human_expected": "RECOMMEND",
+      "acceptable_strategies": [
+        "EXACT_PATH"
+      ],
+      "measured_mib": 150,
+      "label_rationale": "只包含可重建 appcache 的合成情景",
+      "evidence_ids": [
+        "fixture:C11:triage",
+        "fixture:C11:rebuild",
+        "fixture:C11:workload"
+      ]
+    },
+    {
+      "id": "C12",
+      "kind": "unselected_project",
+      "safety_state": "PROTECTED",
+      "rebuildability": "UNKNOWN",
+      "offline_risk": "POSSIBLE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "human_expected": "KEEP",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 5000,
+      "label_rationale": "未经用户选定的项目即使体积很大也不能执行",
+      "evidence_ids": [
+        "fixture:C12:triage",
+        "fixture:C12:rebuild",
+        "fixture:C12:workload"
+      ]
+    },
+    {
+      "id": "C13",
+      "kind": "suspicious_profile_cache_named",
+      "safety_state": "PROTECTED",
+      "rebuildability": "LIKELY",
+      "offline_risk": "HIGH",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "human_expected": "KEEP",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 1500,
+      "label_rationale": "Cache 字样不能证明个人 Profile 下文件可删",
+      "evidence_ids": [
+        "fixture:C13:triage",
+        "fixture:C13:rebuild",
+        "fixture:C13:workload"
+      ]
+    },
+    {
+      "id": "C14",
+      "kind": "vs_code_cacheddata_idle",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "human_expected": "RECOMMEND",
+      "acceptable_strategies": [
+        "EXACT_PATH"
+      ],
+      "measured_mib": 70.3,
+      "label_rationale": "已识别的可重建编辑器缓存且相关程序完全退出",
+      "evidence_ids": [
+        "fixture:C14:triage",
+        "fixture:C14:rebuild",
+        "fixture:C14:workload"
+      ]
+    },
+    {
+      "id": "C15",
+      "kind": "generic_unknown_cache",
+      "safety_state": "UNKNOWN",
+      "rebuildability": "UNKNOWN",
+      "offline_risk": "POSSIBLE",
+      "workload_impact": "UNKNOWN",
+      "native_cleanup_available": false,
+      "human_expected": "KEEP",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 825,
+      "label_rationale": "无法证明类型、活动状态和可恢复性",
+      "evidence_ids": [
+        "fixture:C15:triage",
+        "fixture:C15:rebuild",
+        "fixture:C15:workload"
+      ]
+    },
+    {
+      "id": "C16",
+      "kind": "uv_cache_offline_requirement",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "HIGH",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": true,
+      "human_expected": "KEEP",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 1500,
+      "label_rationale": "离线工作约束使可重下载并不等于现在值得清理",
+      "evidence_ids": [
+        "fixture:C16:triage",
+        "fixture:C16:rebuild",
+        "fixture:C16:workload"
+      ]
+    },
+    {
+      "id": "C17",
+      "kind": "netease_streaming_cache_lowrisk",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "human_expected": "RECOMMEND",
+      "acceptable_strategies": [
+        "EXACT_PATH"
+      ],
+      "measured_mib": 112.3,
+      "label_rationale": "合成条件下已验证纯在线播放媒体缓存且无离线歌曲",
+      "evidence_ids": [
+        "fixture:C17:triage",
+        "fixture:C17:rebuild",
+        "fixture:C17:workload"
+      ]
+    },
+    {
+      "id": "C18",
+      "kind": "codex_old_installer_in_use",
+      "safety_state": "ACTIVE",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "human_expected": "DEFER",
+      "acceptable_strategies": [
+        "NONE"
+      ],
+      "measured_mib": 260,
+      "label_rationale": "虽属于可再生旧安装包，但仍有运行进程信号",
+      "evidence_ids": [
+        "fixture:C18:triage",
+        "fixture:C18:rebuild",
+        "fixture:C18:workload"
+      ]
+    }
+  ]
+}

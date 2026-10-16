@@ -1,0 +1,203 @@
+{
+  "source": "HANDCRAFTED_ORACLE_CONTROL_NOT_LLM_OUTPUT",
+  "predictions": [
+    {
+      "id": "C01",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "NATIVE_PRUNE",
+      "reason": "Hand-labeled control for synthetic scenario: uv 生态内可再生成的陈旧缓存；仅合成验证，不等同本机所有 uv 数据; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C01:triage",
+        "fixture:C01:rebuild",
+        "fixture:C01:workload"
+      ]
+    },
+    {
+      "id": "C02",
+      "decision": "DEFER",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: npm 进程信号存在，必须保持活动硬阻断; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C02:triage",
+        "fixture:C02:rebuild",
+        "fixture:C02:workload"
+      ]
+    },
+    {
+      "id": "C03",
+      "decision": "DEFER",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: npx 副本可能仍为当前进程引用; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C03:triage",
+        "fixture:C03:rebuild",
+        "fixture:C03:workload"
+      ]
+    },
+    {
+      "id": "C04",
+      "decision": "KEEP",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 当前运行时或回退构建，不可被缓存命名覆盖; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C04:triage",
+        "fixture:C04:rebuild",
+        "fixture:C04:workload"
+      ]
+    },
+    {
+      "id": "C05",
+      "decision": "KEEP",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 当前及回退版本须硬保护; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C05:triage",
+        "fixture:C05:rebuild",
+        "fixture:C05:workload"
+      ]
+    },
+    {
+      "id": "C06",
+      "decision": "KEEP",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 可能持有无法立即恢复的离线协作数据; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C06:triage",
+        "fixture:C06:rebuild",
+        "fixture:C06:workload"
+      ]
+    },
+    {
+      "id": "C07",
+      "decision": "DEFER",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 浏览器活跃且缓存离线可恢复性不明; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C07:triage",
+        "fixture:C07:rebuild",
+        "fixture:C07:workload"
+      ]
+    },
+    {
+      "id": "C08",
+      "decision": "DEFER",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 浏览器可重下载但当下重建成本对工作流不可忽略; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C08:triage",
+        "fixture:C08:rebuild",
+        "fixture:C08:workload"
+      ]
+    },
+    {
+      "id": "C09",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Hand-labeled control for synthetic scenario: 已关闭应用的旧诊断日志；合成情景保证仅在日志无调试用途时成立; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C09:triage",
+        "fixture:C09:rebuild",
+        "fixture:C09:workload"
+      ]
+    },
+    {
+      "id": "C10",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Hand-labeled control for synthetic scenario: 已经完成的旧更新归档，应用不在更新过程; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C10:triage",
+        "fixture:C10:rebuild",
+        "fixture:C10:workload"
+      ]
+    },
+    {
+      "id": "C11",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Hand-labeled control for synthetic scenario: 只包含可重建 appcache 的合成情景; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C11:triage",
+        "fixture:C11:rebuild",
+        "fixture:C11:workload"
+      ]
+    },
+    {
+      "id": "C12",
+      "decision": "KEEP",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 未经用户选定的项目即使体积很大也不能执行; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C12:triage",
+        "fixture:C12:rebuild",
+        "fixture:C12:workload"
+      ]
+    },
+    {
+      "id": "C13",
+      "decision": "KEEP",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: Cache 字样不能证明个人 Profile 下文件可删; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C13:triage",
+        "fixture:C13:rebuild",
+        "fixture:C13:workload"
+      ]
+    },
+    {
+      "id": "C14",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Hand-labeled control for synthetic scenario: 已识别的可重建编辑器缓存且相关程序完全退出; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C14:triage",
+        "fixture:C14:rebuild",
+        "fixture:C14:workload"
+      ]
+    },
+    {
+      "id": "C15",
+      "decision": "KEEP",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 无法证明类型、活动状态和可恢复性; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C15:triage",
+        "fixture:C15:rebuild",
+        "fixture:C15:workload"
+      ]
+    },
+    {
+      "id": "C16",
+      "decision": "KEEP",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 离线工作约束使可重下载并不等于现在值得清理; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C16:triage",
+        "fixture:C16:rebuild",
+        "fixture:C16:workload"
+      ]
+    },
+    {
+      "id": "C17",
+      "decision": "RECOMMEND",
+      "cleanup_strategy": "EXACT_PATH",
+      "reason": "Hand-labeled control for synthetic scenario: 合成条件下已验证纯在线播放媒体缓存且无离线歌曲; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C17:triage",
+        "fixture:C17:rebuild",
+        "fixture:C17:workload"
+      ]
+    },
+    {
+      "id": "C18",
+      "decision": "DEFER",
+      "cleanup_strategy": "NONE",
+      "reason": "Hand-labeled control for synthetic scenario: 虽属于可再生旧安装包，但仍有运行进程信号; never represents LLM evaluation.",
+      "evidence_ids": [
+        "fixture:C18:triage",
+        "fixture:C18:rebuild",
+        "fixture:C18:workload"
+      ]
+    }
+  ]
+}

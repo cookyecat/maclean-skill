@@ -1,0 +1,466 @@
+{
+  "kind": "synthetic_hypothetical_scenarios",
+  "label_origin": "researcher-authored—not blinded human gold",
+  "cases": [
+    {
+      "id": "uv-idle",
+      "kind": "uv_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": true,
+      "measured_mib": 764.6,
+      "human_expected": "RECOMMEND",
+      "label_rationale": "Re-downloadable packages; native manager available, no activity",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:uv-idle:support"
+      ],
+      "acceptable_strategies": [
+        "NATIVE_PRUNE"
+      ]
+    },
+    {
+      "id": "uv-required-offline",
+      "kind": "uv_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "HIGH",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": true,
+      "measured_mib": 764.6,
+      "human_expected": "DEFER",
+      "label_rationale": "Offline workflows may fail if cache is purged now",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:uv-required-offline:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "npm-live",
+      "kind": "npm_cache",
+      "safety_state": "ACTIVE",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": true,
+      "measured_mib": 2356.8,
+      "human_expected": "DEFER",
+      "label_rationale": "Active npm processes block cache modifications",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:npm-live:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "codex-current",
+      "kind": "codex_daemon_old",
+      "safety_state": "PROTECTED",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 360,
+      "human_expected": "KEEP",
+      "label_rationale": "Current or fallback Codex runtime must be preserved",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:codex-current:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "cursor-current",
+      "kind": "old_version",
+      "safety_state": "PROTECTED",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 520,
+      "human_expected": "KEEP",
+      "label_rationale": "Current or fallback Cursor build must be preserved",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:cursor-current:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "feishu-offline",
+      "kind": "profile_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "UNKNOWN",
+      "offline_risk": "HIGH",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 40,
+      "human_expected": "KEEP",
+      "label_rationale": "CacheStorage may contain not-yet-replicated offline state",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:feishu-offline:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "chrome-service-worker",
+      "kind": "profile_cache",
+      "safety_state": "ACTIVE",
+      "rebuildability": "UNKNOWN",
+      "offline_risk": "HIGH",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 1000,
+      "human_expected": "KEEP",
+      "label_rationale": "Browser active; offline web-app assets or state uncertain",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:chrome-service-worker:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "puppeteer-idle",
+      "kind": "puppeteer_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 420,
+      "human_expected": "RECOMMEND",
+      "label_rationale": "Synthetic assumption: browser is downloadable and not needed offline",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:puppeteer-idle:support"
+      ],
+      "acceptable_strategies": [
+        "EXACT_PATH"
+      ]
+    },
+    {
+      "id": "puppeteer-soon-needed",
+      "kind": "puppeteer_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "POSSIBLE",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": false,
+      "measured_mib": 420,
+      "human_expected": "DEFER",
+      "label_rationale": "Re-download cost and upcoming offline test matter",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:puppeteer-soon-needed:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "xmind-dated-updater",
+      "kind": "app_update",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 800,
+      "human_expected": "RECOMMEND",
+      "label_rationale": "Synthetic old updater archive with verified re-download source",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:xmind-dated-updater:support"
+      ],
+      "acceptable_strategies": [
+        "EXACT_PATH"
+      ]
+    },
+    {
+      "id": "music-offline-uncertain",
+      "kind": "app_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "LIKELY",
+      "offline_risk": "POSSIBLE",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": false,
+      "measured_mib": 112,
+      "human_expected": "KEEP",
+      "label_rationale": "Do not assume playback cache is not locally unique",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:music-offline-uncertain:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "steam-launcher-active",
+      "kind": "app_cache",
+      "safety_state": "ACTIVE",
+      "rebuildability": "LIKELY",
+      "offline_risk": "NONE",
+      "workload_impact": "MEDIUM",
+      "native_cleanup_available": false,
+      "measured_mib": 75,
+      "human_expected": "DEFER",
+      "label_rationale": "Launcher still running, postponement is reversible",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:steam-launcher-active:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "cargo-expensive",
+      "kind": "cargo_target",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 3500,
+      "human_expected": "DEFER",
+      "label_rationale": "Rebuilding would interrupt costly research compilation",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:cargo-expensive:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "symlink-bypass",
+      "kind": "app_cache",
+      "safety_state": "PROTECTED",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 120,
+      "human_expected": "KEEP",
+      "label_rationale": "Path identity cannot be trusted",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:symlink-bypass:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "measurement-unknown",
+      "kind": "app_cache",
+      "safety_state": "UNKNOWN",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 250,
+      "human_expected": "KEEP",
+      "label_rationale": "No reliable measurement or process audit",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:measurement-unknown:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "npx-unused",
+      "kind": "npx_install",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 120,
+      "human_expected": "RECOMMEND",
+      "label_rationale": "Exact old hash verified unused, reinstall cheap",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:npx-unused:support"
+      ],
+      "acceptable_strategies": [
+        "EXACT_PATH"
+      ]
+    },
+    {
+      "id": "vscode-uncertain",
+      "kind": "app_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "LIKELY",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": false,
+      "measured_mib": 70,
+      "human_expected": "KEEP",
+      "label_rationale": "Not enough evidence cache carries no editor state",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:vscode-uncertain:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "diagnostic-log-needed",
+      "kind": "app_log",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 90,
+      "human_expected": "DEFER",
+      "label_rationale": "Logs needed for ongoing debugging despite regenerability",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:diagnostic-log-needed:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "profile-history",
+      "kind": "personal_profile",
+      "safety_state": "PROTECTED",
+      "rebuildability": "NO",
+      "offline_risk": "HIGH",
+      "workload_impact": "HIGH",
+      "native_cleanup_available": false,
+      "measured_mib": 100,
+      "human_expected": "KEEP",
+      "label_rationale": "Personal browser history is not a cache",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:profile-history:support"
+      ],
+      "acceptable_strategies": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "uv-native-alternative",
+      "kind": "uv_cache",
+      "safety_state": "REVIEW",
+      "rebuildability": "PROVEN",
+      "offline_risk": "NONE",
+      "workload_impact": "LOW",
+      "native_cleanup_available": true,
+      "measured_mib": 510,
+      "human_expected": "RECOMMEND",
+      "label_rationale": "Prefer package-manager prune to direct filesystem removal",
+      "provenance": "synthetic_scenario_not_real_mac_evidence",
+      "available_evidence_ids": [
+        "synthetic:scenario-input"
+      ],
+      "evidence_ids": [
+        "synthetic:scenario-input",
+        "synthetic:uv-native-alternative:support"
+      ],
+      "acceptable_strategies": [
+        "NATIVE_PRUNE"
+      ]
+    }
+  ]
+}
