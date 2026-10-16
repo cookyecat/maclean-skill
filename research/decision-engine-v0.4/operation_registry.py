@@ -73,6 +73,9 @@ def validate_graph(graph: dict) -> None:
         raise ContractError("only synthetic fixture graph schema supported")
     if graph.get("synthetic") is not True or graph.get("complete_client_universe") is not True:
         raise ContractError("synthetic graph with explicitly complete fixture client universe required")
+    family=graph.get("app_family")
+    if family not in ("puppeteer","playwright"):
+        raise ContractError("fixture graph owner must be explicit")
     installed=graph.get("installed_browsers")
     clients=graph.get("clients")
     if not isinstance(installed,list) or not isinstance(clients,dict):
@@ -119,6 +122,8 @@ def assess(operation_id: str, graph: dict, approved_targets: list[str],
     validate_graph(graph)
     if operation_id not in REGISTRY:raise ContractError("unregistered app operation")
     op=REGISTRY[operation_id]
+    if op.application != graph["app_family"]:
+        raise ContractError("cross-application cleanup method not allowed for fixture graph")
     allow=set(approved_targets)
     installed=set(graph["installed_browsers"])
     if len(allow)!=len(approved_targets) or not allow.issubset(installed):
