@@ -6,7 +6,7 @@ import pathlib
 import tempfile
 import unittest
 
-from operation_registry import assess, ContractError, REGISTRY, validate_graph
+from operation_registry import assess, ContractError, REGISTRY, validate_graph, revalidate_synthetic_preview
 from synthetic_dependency_graph import (
     collect, disposable_fixture, FixtureBoundaryError, MARKER, PREFIX,
 )
@@ -163,6 +163,53 @@ class TestOperationContracts(unittest.TestCase):
         self.assertFalse(p["production_eligible"])
         self.assertNotIn("command",p)
         self.assertNotIn("apply",p)
+
+    def test_forged_orphan_claim_denied(self):
+        g=self.graph()
+        g["synthetic_orphan_ids"]=["chrome-1111"]
+        with self.assertRaises(ContractError):
+            assess("puppeteer.browsers.clear_all",g,["chrome-0999"])
+
+    def test_browser_dependency_missing_from_installed_denied(self):
+        g=self.graph()
+        g["clients"]["qa-suite"]=["not-installed"]
+        with self.assertRaises(ContractError):
+            assess("puppeteer.browsers.clear_all",g,["chrome-0999"])
+
+    def test_snapshot_toctou_new_client_reference_detected(self):
+        g=self.graph()
+        prev=assess("puppeteer.browsers.uninstall_build",g,["chrome-0999"],target="chrome-0999")
+        future=copy.deepcopy(g)
+        future["clients"]["new-job"]=["chrome-0999"]
+        future["synthetic_orphan_ids"]=[]
+        next_=revalidate_synthetic_preview(prev,future)
+        self.assertTrue(next_["snapshot_changed"])
+        self.assertIn("GRAPH_CHANGED_REVIEW_REQUIRED",next_["flags"])
+        self.assertIn("SYNTHETIC_CLIENT_STILL_REFERENCES_TARGET",next_["flags"])
+        self.assertFalse(next_["deletion_authorized"])
+
+    def test_snapshot_toctou_extra_installed_build_detected(self):
+        g=self.graph()
+        prev=assess("puppeteer.browsers.clear_all",g,sorted(g["installed_browsers"]))
+        future=copy.deepcopy(g)
+        future["installed_browsers"].append("chrome-2222")
+        future["synthetic_orphan_ids"].append("chrome-2222")
+        next_=revalidate_synthetic_preview(prev,future)
+        self.assertIn("GRAPH_CHANGED_REVIEW_REQUIRED",next_["flags"])
+        self.assertIn("TOUCHED_SET_CHANGED_REVIEW_REQUIRED",next_["flags"])
+        self.assertIn("EXACT_APPROVED_SET_MISMATCH",next_["flags"])
+
+    def test_preflight_without_drift_still_not_authorized(self):
+        g=self.graph()
+        prev=assess("puppeteer.browsers.uninstall_build",g,["chrome-0999"],target="chrome-0999")
+        next_=revalidate_synthetic_preview(prev,g)
+        self.assertFalse(next_["snapshot_changed"])
+        self.assertFalse(next_["production_eligible"])
+        self.assertFalse(next_["deletion_authorized"])
+
+    def test_approval_empty_rejected(self):
+        with self.assertRaises(ContractError):
+            assess("puppeteer.browsers.clear_all",self.graph(),[])
 
 if __name__=="__main__":
     unittest.main(verbosity=2)
