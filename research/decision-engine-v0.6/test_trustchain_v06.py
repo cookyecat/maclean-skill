@@ -161,6 +161,18 @@ class TrustTests(unittest.TestCase):
             self.assertEqual(bounded_file(root,"../outside")["status"],"INVALID_RELATIVE")
             self.assertEqual(bounded_file(root,"/etc/passwd")["status"],"INVALID_RELATIVE")
 
+    def test_non_fixture_home_root_denied_before_statting_child(self):
+        root=pathlib.Path.home()
+        result=bounded_file(root, ".ssh/id_rsa")
+        self.assertEqual(result["status"],"OUTSIDE_DISPOSABLE_FIXTURE_DENIED")
+
+    def test_world_readable_fixture_root_denied(self):
+        with tempfile.TemporaryDirectory(prefix="maclean-v06-test-") as temp:
+            root=pathlib.Path(temp).resolve()
+            root.chmod(0o755)
+            self.assertEqual(bounded_file(root,"absent")["status"],
+                             "OUTSIDE_DISPOSABLE_FIXTURE_DENIED")
+
     def test_native_cli_pinned_isolation_if_available(self):
         marker=pathlib.Path("/tmp/maclean-v05-native-latest-path.txt")
         if not marker.is_file():self.skipTest("pinned on-Mac CLI lab unavailable in CI")
