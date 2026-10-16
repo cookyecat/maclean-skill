@@ -41,12 +41,31 @@ def capture_original(skill_root:pathlib.Path):
     # Do not print raw observations (they can contain paths and PIDs).
     return scripts,observed
 
-def create_preview(skill_root:pathlib.Path,output_dir:pathlib.Path,extra_ids:list[str],excluded_defaults:list[str]|None=None):
+def catalog_fingerprint(triage):
+    """Opaque binding of candidate IDs to exact catalog kinds/paths; no paths printed."""
+    identity=[]
+    for x in triage.get("candidates",[]):
+        if not isinstance(x.get("id"),str) or not isinstance(x.get("path"),str) or not isinstance(x.get("kind"),str):
+            raise PreviewDenied("missing candidate identity field")
+        identity.append([x["id"],x["kind"],x["path"]])
+    identity.sort()
+    raw=json.dumps(identity,separators=(",",":"),ensure_ascii=False).encode()
+    return hashlib.sha256(raw).hexdigest()
+
+
+def create_preview(skill_root:pathlib.Path,output_dir:pathlib.Path,extra_ids:list[str],
+                   excluded_defaults:list[str]|None=None,expected_catalog_sha256:str|None=None):
     # Caller-controlled private destination is itself not a cleanup target.
     if output_dir.is_symlink() or not output_dir.is_dir() or output_dir.stat().st_mode&0o077:
         raise PreviewDenied("output_dir must already exist with owner-only mode 0700")
     scripts,triage=capture_original(skill_root)
     decisions=assess(triage)
+    observed_catalog_sha256=catalog_fingerprint(triage)
+    # Selection IDs are ordinal, NOT stable identities. Always bind post-scan
+    # user changes to exactly the previously reviewed ID->path association.
+    if (extra_ids or excluded_defaults) and (not isinstance(expected_catalog_sha256,str)
+         or observed_catalog_sha256!=expected_catalog_sha256):
+        raise PreviewDenied("candidate identities changed or previous-review digest missing; rescan and review")
     byid={row["id"]:row for row in decisions["items"]}
     original={row["id"]:row for row in triage["candidates"]}
     excluded_defaults=excluded_defaults or []
@@ -110,6 +129,7 @@ def create_preview(skill_root:pathlib.Path,output_dir:pathlib.Path,extra_ids:lis
             row["reason"]="Process became active during preflight; excluded"
     output={
        "schema":"maclean-pragmatic-batch-v0.8",
+       "candidate_identity_sha256":observed_catalog_sha256,
        "privacy":"redacted display; exact paths only in local unapproved plan",
        "total_candidates":len(safe_items),
        "catalog_classes":decisions["totals"],
@@ -130,7 +150,7 @@ def create_preview(skill_root:pathlib.Path,output_dir:pathlib.Path,extra_ids:lis
     # stdout includes only summary, never private IDs/pids/paths
     return {k:output[k] for k in ("total_candidates","catalog_classes",
             "estimated_mib_by_class","selected_count","selected_measured_mib",
-            "deferred_at_second_check","original_executor_dry_run","user_approved","any_deletion_performed")
+            "deferred_at_second_check","original_executor_dry_run","user_approved","any_deletion_performed","candidate_identity_sha256")
            }|{"pending_plan_sha256":plan_sha256,
               "private_local_files":True,"no_apply_supported":True}
 
@@ -140,9 +160,10 @@ def main():
     p.add_argument("--private-output-dir",type=pathlib.Path,required=True)
     p.add_argument("--include-optional",action="append",default=[],metavar="CANDIDATE_ID")
     p.add_argument("--exclude-default",action="append",default=[],metavar="CANDIDATE_ID")
+    p.add_argument("--expected-catalog-sha256",default=None,metavar="HASH")
     args=p.parse_args()
     print(json.dumps(create_preview(args.skill_root,args.private_output_dir,args.include_optional,
-                                    args.exclude_default),ensure_ascii=False))
+                                    args.exclude_default,args.expected_catalog_sha256),ensure_ascii=False))
 if __name__=="__main__":
     try:main()
     except (ValueError,OSError,PolicyError,subprocess.TimeoutExpired,json.JSONDecodeError) as e:
