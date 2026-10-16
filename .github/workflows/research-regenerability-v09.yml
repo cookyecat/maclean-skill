@@ -1,0 +1,42 @@
+name: Research v0.9 Regenerability Rules
+on:
+  push:
+    branches:
+      - 'research/decision-engine-regenerability-v0.9'
+  pull_request:
+    paths:
+      - 'research/decision-engine-v0.9/**'
+      - '.github/workflows/research-regenerability-v09.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-regenerability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Static compile
+        run: python3 -m compileall -q research/decision-engine-v0.9
+      - name: Test regeneration and hard protections
+        working-directory: research/decision-engine-v0.9
+        run: python3 -m unittest -v test_regenerability_v09 test_native_method_v09
+      - name: Research classifier must never create executable plan
+        working-directory: research/decision-engine-v0.9
+        run: |
+          python3 - <<'PY'
+          from regenerability_policy import classify
+          row={'id':'id1','kind':'npm_cache','status':'ACTIVE',
+               'safety_blocks':['RELATED_PROCESS_RUNNING'],'size_mib':250,
+               'rebuild_risk':''}
+          x=classify(row)
+          assert x['selection']=='DEFAULT'
+          assert not x['execution_ready']
+          assert not x['operation_adapter_verified']
+          assert not x['user_approved']
+          print('Process-family bypass only affects recommendation, never apply')
+          PY
+      - name: No native cleanup, no real Mac in CI
+        run: echo "Read-only synthetic policy regression."
