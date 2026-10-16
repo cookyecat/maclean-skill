@@ -269,6 +269,25 @@ def human_confirm(digest,selected):
     print("Type DELETE "+digest[:8]+" to authorize this exact batch:",flush=True)
     if input().strip()!="DELETE "+digest[:8]:stop("terminal confirmation mismatch")
 
+def review(planpath):
+    plan,digest=parse_plan(planpath)
+    labels={"npm.cache.clean_all":"npm 包下载缓存",
+            "uv.cache.prune":"uv 缓存维护",
+            "npm.cache.npx.rm_exact":"npx 下载的命令环境"}
+    items=[]
+    for entry in plan["targets"]:
+        items.append({"id":entry["id"],"label":labels[entry["operation"]],
+                      "selection":entry["tier"],"checked_by_default":entry["tier"]=="DEFAULT",
+                      "measured_allocation_mib":entry["size_mib"],
+                      "rebuild_impact":entry["risk"],
+                      "action":"NATIVE_METHOD_AFTER_APPROVAL" if not entry["preview_only"] else "PREVIEW_ONLY",
+                      "approved":False})
+    return {"schema":"maclean-v1.1-user-review","plan_sha256":digest,
+            "items":items,"default_count":sum(x["checked_by_default"] for x in items),
+            "optional_count":sum(not x["checked_by_default"] for x in items),
+            "user_approved":False,
+            "warning":"Displayed allocations are not measured net reclaim. Real execution requires separate exact approval."}
+
 def preview(skill_root,planpath,chosen):
     plan,digest=parse_plan(planpath)
     entries=choose(plan,chosen)
@@ -324,11 +343,15 @@ def main():
     group.add_argument("--plan",type=pathlib.Path)
     cli.add_argument("--select",action="append",default=[])
     cli.add_argument("--apply",action="store_true")
+    cli.add_argument("--review",action="store_true")
     cli.add_argument("--approval",type=pathlib.Path)
     a=cli.parse_args()
     if a.create_draft:
-        if a.apply or a.approval or a.select:stop("draft generation cannot apply or approve")
+        if a.apply or a.approval or a.select or a.review:stop("draft generation cannot apply or approve")
         result=draft(a.skill_root,a.create_draft)
+    elif a.review:
+        if a.apply or a.approval or a.select:stop("review cannot combine with apply/approval/selection")
+        result=review(a.plan)
     else:
         if not a.select:stop("select exact candidates from unapproved draft first")
         if a.apply:
