@@ -44,6 +44,10 @@ def validate_case(item: dict) -> None:
     require(item["offline_risk"] in OFFLINE, "invalid offline_risk")
     require(item["workload_impact"] in IMPACT, "invalid workload_impact")
     require(type(item.get("native_cleanup_available")) is bool, "native_cleanup_available must be boolean")
+    require(isinstance(item.get("available_evidence_ids"), list)
+            and bool(item["available_evidence_ids"])
+            and all(isinstance(z, str) and z for z in item["available_evidence_ids"]),
+            "available_evidence_ids must be nonempty")
     require(type(item.get("measured_mib")) in (int, float)
             and 0 <= item["measured_mib"] < 10_000_000, "invalid measured_mib")
 
@@ -64,6 +68,8 @@ def preflight_violation(case: dict, prediction: dict) -> list[str]:
     if prediction["decision"] != "RECOMMEND":
         return []
     issues = []
+    if not set(prediction["evidence_ids"]).issubset(set(case["available_evidence_ids"])):
+        issues.append("UNVERIFIED_EVIDENCE_REFERENCE")
     if case["safety_state"] != "REVIEW":
         issues.append("UNSAFE_SAFETY_STATE")
     if case["rebuildability"] != "PROVEN":
