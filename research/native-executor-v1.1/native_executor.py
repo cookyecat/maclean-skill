@@ -120,9 +120,16 @@ def check_paths(entry, resolve_target, check_target_type, home):
     if target.exists():check_target_type(target)
     return target
 
+def fs_identity(path):
+    if path.is_symlink() or not path.exists():stop("native cache target disappeared")
+    st=path.lstat()
+    if not stat.S_ISDIR(st.st_mode):stop("native cache target is not an ordinary directory")
+    return {"dev":st.st_dev,"ino":st.st_ino}
+
 def snapshot(rows):return {r.get("id"):r for r in rows if isinstance(r,dict)}
 def snapshot_id(entries):
-    return sha(canonical([[e["id"],e["kind"],e["path"],e["operation"]] for e in entries]))
+    return sha(canonical([[e["id"],e["kind"],e["path"],e["operation"],
+                           e["target_identity"]] for e in entries]))
 
 def draft(skill_root:pathlib.Path, dest:pathlib.Path):
     if os.geteuid()==0:stop("root not allowed")
@@ -133,7 +140,8 @@ def draft(skill_root:pathlib.Path, dest:pathlib.Path):
         entry=allowed(row)
         if entry is None:continue
         if not isinstance(entry["id"],str) or not entry["id"]:stop("bad candidate id")
-        check_paths(entry,resolve,check_type,pathlib.Path.home())
+        path=check_paths(entry,resolve,check_type,pathlib.Path.home())
+        entry["target_identity"]=fs_identity(path)
         choices.append(entry)
     if len({e["id"] for e in choices})!=len(choices):stop("duplicate candidate id")
     if not choices:stop("no supported native candidates")
@@ -162,11 +170,27 @@ def parse_plan(planpath):
                          "selected_identity_sha256","user_approved","targets"}
         or data["original_bundle_version"]!="1.4.0"):
         stop("invalid original unapproved native draft")
+    try:
+        created=datetime.fromisoformat(data["created_at_utc"])
+    except (ValueError,TypeError,KeyError):
+        stop("invalid plan timestamp")
+    age=(datetime.now(timezone.utc)-created.astimezone(timezone.utc)).total_seconds() if created.tzinfo else -1
+    if age<0 or age>7200:stop("plan expired or timestamp from the future")
     items=data["targets"]
     if not isinstance(items,list) or not 1<=len(items)<=80 or any(not isinstance(x,dict) for x in items):
         stop("invalid native target count")
-    allowed_keys={"id","path","kind","operation","tier","risk","size_mib","status_at_draft","preview_only"}
+    allowed_keys={"id","path","kind","operation","tier","risk","size_mib","status_at_draft",
+                  "preview_only","target_identity"}
     if any(set(x)!=allowed_keys for x in items):stop("unexpected target fields")
+    for entry in items:
+        identity=entry["target_identity"]
+        if (not isinstance(identity,dict) or set(identity)!={"dev","ino"}
+                or any(type(identity[k]) is not int or identity[k]<=0 for k in ("dev","ino"))):
+            stop("invalid file identity")
+        if entry["operation"]=="npm.cache.npx.rm_exact" and entry["preview_only"] is not True:
+            stop("npx runtime removal must remain preview-only")
+        if entry["operation"] not in OPERATIONS and entry["operation"]!="npm.cache.npx.rm_exact":
+            stop("unknown method id")
     if data["selected_identity_sha256"]!=snapshot_id(items):
         stop("draft internal target identity mismatch")
     if len({x["id"] for x in items})!=len(items):
@@ -187,11 +211,14 @@ def compare_live(entries,rows,resolve,check_type,home):
     for e in entries:
         if e["id"] not in now:stop("selected candidate no longer exists")
         fresh=allowed(now[e["id"]])
-        if fresh is None or fresh["path"]!=e["path"] or fresh["kind"]!=e["kind"] or fresh["operation"]!=e["operation"]:
+        if (fresh is None or fresh["path"]!=e["path"] or fresh["kind"]!=e["kind"]
+                or fresh["operation"]!=e["operation"] or fresh["tier"]!=e["tier"]
+                or fresh["preview_only"]!=e["preview_only"]):
             stop("selected target identity, risk or method changed; require new review")
         if now[e["id"]]["status"] not in ("ACTIVE","REVIEW"):stop("new safety block")
         target=check_paths(e,resolve,check_type,home)
-        if not target.exists():stop("approved target became absent")
+        if fs_identity(target)!=e["target_identity"]:
+            stop("selected target inode/device changed; require new review")
     return True
 
 def native_env(context:pathlib.Path,op,path):
@@ -259,7 +286,7 @@ def apply(skill_root,planpath,chosen,approval):
     # NEVER called for user's real cache during research/this task.
     plan,digest=parse_plan(planpath)
     entries=choose(plan,chosen)
-    if any(e["preview_only"] for e in entries):
+    if any(e["operation"]=="npm.cache.npx.rm_exact" or e["preview_only"] for e in entries):
         stop("npx key deletion is preview-only: native command may break running tasks")
     approved_file(approval,digest,chosen)
     scripts,resolve,check_type=original(skill_root)
