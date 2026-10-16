@@ -1,6 +1,6 @@
 # MacLean — 隐私优先、AI 决策的 macOS 磁盘审计 Skill
 
-**已公开源代码｜v1.3.0｜MIT 许可证**
+**已公开源代码｜v1.3.1｜MIT 许可证**
 
 它帮助 AI 识别值得进一步讨论的**技术缓存与构建产物**，不以“找到大文件就删除”为目标。
 
@@ -18,20 +18,19 @@
 ## 使用流程
 
 1. 从可信来源取得 ZIP，并比对 [SHA-256](artifacts/SHA256SUMS.txt)。
-2. 将原始 `macos-disk-auditor-v1.3.0.zip` 导入支持 Skills 的环境；新会话核对版本。安装 Skill **并不自动授权访问 Mac**。
+2. 将原始 `macos-disk-auditor-v1.3.1.zip` 导入支持 Skills 的环境；新会话核对版本。安装 Skill **并不自动授权访问 Mac**。
 3. 通过已独立授权的 Mac 连接器执行原版 `verify_bundle.py` 和只读审计，先不要申请实际清理。
 4. AI 结合测量值、进程保护、可再生性、离线需求与风险进行分析。
 5. 用户决定是否继续了解精确路径、查看计划或批准清理。`--plan` 默认仅预览，绝不执行删除；`--apply` 需要**新的、明确的逐项批准**及本机交互终端输入 `DELETE`，社区验收禁止使用。
 
 ## 验收证据与限制
 
-2026-10-16 在**一台** Mac mini（macOS 26.5.2，Python 3.14.7）通过 G0–G7：manifest 17/17、自测 53/53、Home 策略内 20/20、Library 策略内 4/4。未执行真实文件清理，不能据此宣称适配所有 macOS / 连接器。
+v1.3.0 于 2026-10-16 在**一台** Mac mini（macOS 26.5.2，Python 3.14.7）通过 G0–G7：manifest 17/17、自测 53/53、Home 策略内 20/20、Library 策略内 4/4。未执行真实文件清理，不能据此宣称适配所有 macOS / 连接器。
 
 ## 社区发布状态
 
-**本项目已按 [MIT](LICENSE) 许可证开源**，版权声明为 2026 cookyecat。仓库内 Skill 源码、manifest 和安装 ZIP 均保持 v1.3.0 验收通过时的原始字节。
+**本项目已按 [MIT](LICENSE) 许可证开源**，版权声明为 2026 cookyecat。仓库内 Skill 源码、manifest 和安装 ZIP 与重新打包的 v1.3.1 版本一致；原 G0–G7 验收适用于历史 v1.3.0。
 
-**已知说明文档问题：** 原始 Skill 内少数旧文档仍引用 v1.2.3 安装命令或以前的全目录扫描建议。使用者请以仓库根目录的 [安装指南](docs/INSTALLATION.md)、[隐私说明](PRIVACY.md) 和 [已知问题](docs/KNOWN-BUNDLE-ISSUES.md) 为准，**不得运行旧版宽范围递归扫描示例**。今后通过新补丁版本修订并重新验收。
 
 - [安装与运行](docs/INSTALLATION.md)
 - [隐私策略](PRIVACY.md)
@@ -39,3 +38,5 @@
 - [AI 和执行器分工](docs/AI-EXECUTOR-CONTRACT.md)
 - [兼容性说明](docs/COMPATIBILITY.md)
 - [发布前待办](docs/RELEASE-CHECKLIST.md)
+
+**v1.3.1 修复 [Issue #1](https://github.com/cookyecat/maclean-skill/issues/1)**；安装后请重新验证 G0–G7。

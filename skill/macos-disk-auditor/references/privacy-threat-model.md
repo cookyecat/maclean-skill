@@ -1,4 +1,4 @@
-# Privacy threat model — v1.3.0
+# Privacy threat model — v1.3.1
 
 ## Assets at risk
 Personal documents, contact data, messages, iCloud documents, call history, TCC privacy data, browser profiles, developer source names, API tokens in process arguments, host/user identity, raw audit reports.

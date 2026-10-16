@@ -1,24 +1,24 @@
 {
   "name": "macos-disk-auditor",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "hash_algorithm": "sha256",
   "files": {
-    "README_zh.md": "50f8b5ba4932b44585ae3f90ce48d59290f8d0335df083ff079d79dd4fa4958d",
-    "SKILL.md": "64c93c23d9325101d3cf115ca8181f91317d229668d789c7f28b1a4c4c6872fe",
+    "README_zh.md": "c018b806d6a41eb8ade2b4da0f201b79052684da012bd7358b0649bc32bb9ffd",
+    "SKILL.md": "bd4d06f4ae637b534fd1e49f4859ebae7f8823489266150daf14c287427e29f3",
     "examples/cleanup-plan.example.json": "3840455f2ff25bb107a6522bcd5034aecc4cd6af954f07d0bf1829acacfbf23a",
-    "references/classification.md": "32511430dde4e2f4ad467ecad0d3143f07c378e48b76e323449adfc088e66e68",
-    "references/execution-contract.md": "572d7e2cfc774a57802ccfd68df21d7aca492f5fe306bb11a14eacccc2285530",
-    "references/home-targets.md": "93c88098b9744e1eae08611cceb6759863a17f593ae889f5aedb9f68805a5a17",
-    "references/install.md": "27ba6b8fae41e93e413f86a0076b52e4c04b35e42b33933517ae98963f59594d",
-    "references/privacy-threat-model.md": "018288dd385cb68fe503e44869a6136f5fdb1674c3e420e8a1f3d0682c1f2472",
-    "references/remote-scan.md": "6d3bac6f51e566f9e441050e82a7212b169a36c49e89ca30081cda39f8ac3e2a",
-    "references/transport.md": "8fd132a89a4240d90d86e0fec8e0814aa152b89cce2425b36aa0de928e512965",
+    "references/classification.md": "0e153cb7e859828aca6c49155f85b2359b8a94d8a6c5e4faefc4d0e0f8b4a78a",
+    "references/execution-contract.md": "0f9a345c3a1aa2eb45b1b355891d0afdb5f6a4673f5e6a5c33deb33cf4bd316b",
+    "references/home-targets.md": "e050fbfa292879a3d59dd155801736cb6ddfe91faf909d59377bc89048bbf08c",
+    "references/install.md": "8bc797d7fdc60eab37e4cd5621ea13f8cdcdcad1f350a72458203f6733b5cba7",
+    "references/privacy-threat-model.md": "73604230ab0521470fd5228fcea3ccaf84a33cf701e63c5f44157df406370e34",
+    "references/remote-scan.md": "3ad89d25cc184dbd72749777735a755910275451586ab443856d3304830efff3",
+    "references/transport.md": "ee7aee88b7f87851fd74f2c93687e0ffdd8ddd1e2c4a5d6f252ae2fb0948cbb8",
     "scripts/audit_disk.py": "1e5c684dcef2f2d5419e544a23fbe39672483e177e19b80e21e0ddfc32901d4b",
-    "scripts/audit_session.py": "c720e02328eb41dec20b4da5662f7e0e44a82e2e112214985ed4fcaffbf072b8",
+    "scripts/audit_session.py": "0a24b2992c9b66f59905c2e1f00645227f87c658fb91c5aff56cfefb0151a4ef",
     "scripts/cleanup_plan.py": "c7437018410b8c3bfbe6373f2c2a68abfd12f723a21e4e4e36e7a28e01647d2a",
     "scripts/privacy_policy.py": "c779167dd7a834e9d5c0013577acf4828711b8ae708ed583a0fb3f300dd14d5a",
-    "scripts/self_test.py": "ba8f8df56e7fe6d7e38454505227d0b96e626e9f5fd5293b2f5c7fb38c071d36",
+    "scripts/self_test.py": "988bfa4cd41e900ec16b7c5f01eed6c2b52fedcab25b689565cffa567bda4886",
     "scripts/triage_home.py": "c2dfa43e70285e6d7f721813fec92578b124a54e0798a35f497ceb24582c8d49",
-    "scripts/verify_bundle.py": "ff30e9aeac7d02701f64fe007810801d5474c79f651ab8b0f27191f5d0db2ccb"
+    "scripts/verify_bundle.py": "32bedc2defdc6ac9ed4e79b47f84bcc69287b61f00057112db6f1d551bfe110a"
   }
 }

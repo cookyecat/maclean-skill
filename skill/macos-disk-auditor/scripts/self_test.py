@@ -352,14 +352,14 @@ def main():
         # v1.2 execution integrity and real bundled-script runner checks.
         verifier = execute(home, "verify_bundle.py", ["--json"])
         valid = json.loads(verifier.stdout)
-        check(verifier.returncode == 0 and valid["ok"] and valid["version"] == "1.3.0",
-              "Installed v1.3.0 manifest validates shipped scripts")
+        check(verifier.returncode == 0 and valid["ok"] and valid["version"] == "1.3.1",
+              "Installed v1.3.1 manifest validates shipped scripts")
         check(valid["checked"] == valid["expected_files"] and valid["checked"] >= 12,
               "Manifest covers all shipped executable sources/references")
         check(valid["declared_versions"] == {
-                  "SKILL.md": "1.3.0",
-                  "README_zh.md": "1.3.0",
-                  "references/execution-contract.md": "1.3.0"},
+                  "SKILL.md": "1.3.1",
+                  "README_zh.md": "1.3.1",
+                  "references/execution-contract.md": "1.3.1"},
               "All release headings match manifest; historical version mentions are ignored")
 
         # Corrupt one file inside a completely separate copy; never change the real package.
@@ -378,7 +378,7 @@ def main():
         # semantic release declaration check must still detect the mismatch.
         tampered.write_bytes((BASE / "triage_home.py").read_bytes())
         cloned_skill = cloned / "SKILL.md"
-        original_title = "# macOS Disk Auditor & Safe Cleanup — v1.3.0"
+        original_title = "# macOS Disk Auditor & Safe Cleanup — v1.3.1"
         assert original_title in cloned_skill.read_text()
         cloned_skill.write_text(cloned_skill.read_text().replace(
             original_title, "# macOS Disk Auditor & Safe Cleanup — v1.2.2", 1))
@@ -398,7 +398,7 @@ def main():
         receipt = json.loads(runner.stdout)
         audit_report = json.loads(Path(receipt["report_path"]).read_text())
         check(runner.returncode == 0 and audit_report["status"] == "ok" and
-              audit_report["version"] == "1.3.0" and
+              audit_report["version"] == "1.3.1" and
               audit_report["executed_script"] == "scripts/audit_disk.py" and
               audit_report["result"]["root_total_skipped"] is True,
               "Audit session runs original audit_disk.py and checkpoints verified scope")

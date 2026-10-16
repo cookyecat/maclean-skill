@@ -3,7 +3,7 @@ name: macos-disk-auditor
 description: Privacy-first, evidence-backed macOS disk auditing and AI-guided, separately approved cleanup. Default scanner only measures known technical caches, never broad Home or private user data.
 ---
 
-# macOS Disk Auditor & Safe Cleanup — v1.3.0
+# macOS Disk Auditor & Safe Cleanup — v1.3.1
 
 ## Non-negotiable boundaries
 
@@ -25,7 +25,7 @@ description: Privacy-first, evidence-backed macOS disk auditing and AI-guided, s
 
 | Gate | Mandatory proof |
 |---|---|
-| G0 release | Read current installed `SKILL.md`, execution contract and manifest. Version from authoritative first titles must match 1.3.0; historical mentions not current version. If resource and installed bytes conflict, show both exact SHA-256 rather than pretend PASS. |
+| G0 release | Read current installed `SKILL.md`, execution contract and manifest. Version from authoritative first titles must match 1.3.1; historical mentions not current version. If resource and installed bytes conflict, show both exact SHA-256 rather than pretend PASS. |
 | G1 connection | Authorized connector reaches actual Mac, ordinary user, process context. |
 | G2 original deployment | Original installed source bytes staged in independently authorized temporary directory on Mac. No assistant rewrite substituted. |
 | G3 integrity | Run original `scripts/verify_bundle.py --json` ON Mac, all manifest hashes and declared versions match. |
@@ -63,6 +63,6 @@ python3 scripts/audit_session.py --scope triage --output-dir "$REPORT_DIR" --tim
 
 ## File manifest & maintained safety behavior
 
-`verify_bundle.py` hashes all shipped reference/scripts. v1.3.0 extends scan privacy and report security while keeping earlier fail-closed controls: cancellation, unapproved plans, TTY gate, active npm/Codex/Cursor checks, current/fallback versions, clean Git/Cargo target checks, PTY EOF and macOS `/var` alias regression.
+`verify_bundle.py` hashes all shipped reference/scripts. v1.3.1 extends scan privacy and report security while keeping earlier fail-closed controls: cancellation, unapproved plans, TTY gate, active npm/Codex/Cursor checks, current/fallback versions, clean Git/Cargo target checks, PTY EOF and macOS `/var` alias regression.
 
 For transport/permission failures use an independently authorized connector only, otherwise stop and report. Never fabricate verification evidence. No real cleanup is authorized by requesting a dry-run or acceptance test.

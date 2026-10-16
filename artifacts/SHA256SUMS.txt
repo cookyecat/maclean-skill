@@ -1,1 +1,2 @@
 4dc20c4a33b57ee6a0bc76296042cd97834a5d21be6afd6d8450bda47bdf3a09  macos-disk-auditor-v1.3.0.zip
+7ec47c0d0afe5b60aa200359885b59658fa9d0504af340ef83757ccc0d0512f5  macos-disk-auditor-v1.3.1.zip

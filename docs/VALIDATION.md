@@ -21,13 +21,13 @@ No shell approximation of the scanner counts as shipped-Skill execution. Do not 
 Mac:
 
 ```bash
-shasum -a 256 artifacts/macos-disk-auditor-v1.3.0.zip
+shasum -a 256 artifacts/macos-disk-auditor-v1.3.1.zip
 ```
 
 Linux:
 
 ```bash
-sha256sum artifacts/macos-disk-auditor-v1.3.0.zip
+sha256sum artifacts/macos-disk-auditor-v1.3.1.zip
 ```
 
 Check the hash against `artifacts/SHA256SUMS.txt` obtained from a trusted publisher channel. `verify_bundle.py` uses the manifest to check internal file integrity only.

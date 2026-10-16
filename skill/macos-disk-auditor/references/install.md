@@ -1,8 +1,8 @@
-# Install and genuine acceptance in ChatGPT / Codex — v1.2.3
+# Install and genuine acceptance in ChatGPT / Codex — v1.3.1
 
 ## ChatGPT web Skill upload
 
-Upload `macos-disk-auditor-v1.2.3.zip` through the Skills uploader available in your workspace. Update/replace older versions when supported; otherwise retire the old version in the UI and import the ZIP. After installing, open a **new conversation** and explicitly select the Skill if the UI requires selection.
+Upload `macos-disk-auditor-v1.3.1.zip` through the Skills uploader available in your workspace. Update/replace older versions when supported; otherwise retire the old version in the UI and import the ZIP. After installing, open a **new conversation** and explicitly select the Skill if the UI requires selection.
 
 A Skill displayed in the UI **is not proof** that the active session can read its `SKILL.md`. ChatGPT Skill execution does not copy the scripts to your Mac automatically. The agent must transfer the exact bundled files (or verify the user's already installed copy) and run the originals there. See `references/execution-contract.md` and `references/transport.md`.
 
@@ -12,7 +12,7 @@ Repository scoped:
 
 ```bash
 mkdir -p /path/to/repo/.agents/skills
-unzip -q macos-disk-auditor-v1.2.3.zip -d /path/to/repo/.agents/skills
+unzip -q macos-disk-auditor-v1.3.1.zip -d /path/to/repo/.agents/skills
 ```
 
 Follow repo `AGENTS.md` and the user's Mac connection permissions.
@@ -23,7 +23,7 @@ Use the trusted ZIP that was provided to the user (not a random download):
 
 ```bash
 STAGE=$(mktemp -d)
-unzip -q "$HOME/Downloads/macos-disk-auditor-v1.2.3.zip" -d "$STAGE"
+unzip -q "$HOME/Downloads/macos-disk-auditor-v1.3.1.zip" -d "$STAGE"
 cd "$STAGE/macos-disk-auditor"
 python3 scripts/verify_bundle.py --json
 ```
@@ -36,6 +36,7 @@ Choose a fresh scratch report directory with sufficient space and user permissio
 
 ```bash
 REPORT_DIR=$(mktemp -d)
+chmod 700 "$REPORT_DIR"
 python3 scripts/self_test.py
 python3 scripts/audit_session.py --scope home    --output-dir "$REPORT_DIR" --timeout 180
 python3 scripts/audit_session.py --scope library --output-dir "$REPORT_DIR" --timeout 180

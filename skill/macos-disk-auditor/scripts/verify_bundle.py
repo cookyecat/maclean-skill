@@ -18,7 +18,7 @@ def digest(path):
 
 # Authoritative release declarations: only document headings identify the
 # installed version. Historical vX.Y.Z references in body text are not errors.
-EXPECTED_VERSION = "1.3.0"
+EXPECTED_VERSION = "1.3.1"
 DECLARATION_PATTERNS = {
     "SKILL.md": r"^# macOS Disk Auditor & Safe Cleanup — v(\d+\.\d+\.\d+)\s*$",
     "README_zh.md": r"^# macOS Disk Auditor & Safe Cleanup v(\d+\.\d+\.\d+)\s*$",

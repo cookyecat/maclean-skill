@@ -1,11 +1,11 @@
-# Installation and safe first run — community draft v1.3.0
+# Installation and safe first run — community draft v1.3.1
 
-> **This document is the corrected community installation guide.** Historical files inside the frozen v1.3.0 bundle still reference `v1.2.3` in `references/install.md` and `references/transport.md`. Until a new versioned Skill patch replaces those bundled references and passes G0–G7, **do not follow their old filename/version snippets**.
+> **v1.3.1 fixes embedded installation and transport references.** Verify the actual installed Skill version. Historical v1.3.0 G0–G7 evidence does not certify newly changed v1.3.1 bytes.
 
 ## ChatGPT with an authorized Mac connector
 
-1. Import the exact `macos-disk-auditor-v1.3.0.zip` from `artifacts/` via your supported Skill installation UI. An installed or selected Skill does **not** grant access to the Mac.
-2. In a new conversation, ask the agent to read the *actually installed* `SKILL.md` and manifest; verify version `1.3.0`, and request **read-only Privacy Safe** audit.
+1. Import the exact `macos-disk-auditor-v1.3.1.zip` from `artifacts/` via your supported Skill installation UI. An installed or selected Skill does **not** grant access to the Mac.
+2. In a new conversation, ask the agent to read the *actually installed* `SKILL.md` and manifest; verify version `1.3.1`, and request **read-only Privacy Safe** audit.
 3. Authorize Mac MCP Gateway or another Mac computer connector **separately**, subject to your own chosen scope. Do not enable Full Disk Access as a requirement of this Skill.
 4. Allow deployment of verified original files and reports to a fresh disposable location only. The agent must run **bundled** scripts, not replace them with ad hoc `find`/`du` commands.
 5. Review anonymous candidate data; do **not** approve `--apply` as part of a scan or installation.
@@ -15,7 +15,7 @@
 Run only after you trust and locally possess the ZIP. The commands below create a staging directory and owner-private reports, but do not delete any audited user data:
 
 ```bash
-ZIP="$HOME/Downloads/macos-disk-auditor-v1.3.0.zip"
+ZIP="$HOME/Downloads/macos-disk-auditor-v1.3.1.zip"
 STAGE="$(mktemp -d)"
 unzip -q "$ZIP" -d "$STAGE"
 cd "$STAGE/macos-disk-auditor" || exit 1
