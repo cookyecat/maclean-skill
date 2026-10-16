@@ -1,0 +1,198 @@
+{
+  "dataset": "evidence-ladder-synthetic-v0.3",
+  "is_synthetic": true,
+  "is_gold_labeled": false,
+  "source": "artificial_evidence_ladder_conditions",
+  "notes": "Synthetic E3 means all named checks are GIVEN as a thought experiment, not verified on the real Mac. No deletion commands or real paths.",
+  "cases": [
+    {
+      "id": "L01",
+      "artifact_kind": "uv",
+      "machine_safety_state": "REVIEW",
+      "evidence_level": "E0",
+      "publisher_reference": "https://docs.astral.sh/uv/concepts/cache/",
+      "fixture_method": "none",
+      "exact_identity_verified": false,
+      "exact_target_unused": false,
+      "download_recovery_verified": false,
+      "offline_dependency_excluded": false,
+      "workload_impact": "LOW",
+      "attestation_type": "NONE",
+      "current_offline_dependency": "unknown",
+      "available_evidence_ids": [
+        "scenario:L01:status",
+        "scenario:L01:rebuild",
+        "scenario:L01:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    },
+    {
+      "id": "L02",
+      "artifact_kind": "uv",
+      "machine_safety_state": "REVIEW",
+      "evidence_level": "E2",
+      "publisher_reference": "https://docs.astral.sh/uv/concepts/cache/",
+      "fixture_method": "native_uv_fixture_only",
+      "exact_identity_verified": false,
+      "exact_target_unused": false,
+      "download_recovery_verified": false,
+      "offline_dependency_excluded": false,
+      "workload_impact": "LOW",
+      "attestation_type": "NONE",
+      "current_offline_dependency": "unknown",
+      "available_evidence_ids": [
+        "scenario:L02:status",
+        "scenario:L02:rebuild",
+        "scenario:L02:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    },
+    {
+      "id": "L03",
+      "artifact_kind": "uv",
+      "machine_safety_state": "REVIEW",
+      "evidence_level": "E3_SYNTHETIC",
+      "publisher_reference": "https://docs.astral.sh/uv/concepts/cache/",
+      "fixture_method": "native_uv_prune",
+      "exact_identity_verified": true,
+      "exact_target_unused": true,
+      "download_recovery_verified": true,
+      "offline_dependency_excluded": true,
+      "workload_impact": "LOW",
+      "attestation_type": "SYNTHETIC_ASSUMED_INDEPENDENT_CHECKS_NOT_REAL_MAC",
+      "current_offline_dependency": "no",
+      "available_evidence_ids": [
+        "scenario:L03:status",
+        "scenario:L03:rebuild",
+        "scenario:L03:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    },
+    {
+      "id": "L04",
+      "artifact_kind": "uv",
+      "machine_safety_state": "ACTIVE",
+      "evidence_level": "E3_SYNTHETIC",
+      "publisher_reference": "https://docs.astral.sh/uv/concepts/cache/",
+      "fixture_method": "native_uv_prune",
+      "exact_identity_verified": true,
+      "exact_target_unused": true,
+      "download_recovery_verified": true,
+      "offline_dependency_excluded": true,
+      "workload_impact": "LOW",
+      "attestation_type": "SYNTHETIC_ASSUMED_INDEPENDENT_CHECKS_NOT_REAL_MAC",
+      "current_offline_dependency": "no",
+      "available_evidence_ids": [
+        "scenario:L04:status",
+        "scenario:L04:rebuild",
+        "scenario:L04:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    },
+    {
+      "id": "L05",
+      "artifact_kind": "puppeteer",
+      "machine_safety_state": "REVIEW",
+      "evidence_level": "E1",
+      "publisher_reference": "https://pptr.dev/guides/installation",
+      "fixture_method": "publisher_download_documented",
+      "exact_identity_verified": false,
+      "exact_target_unused": false,
+      "download_recovery_verified": false,
+      "offline_dependency_excluded": false,
+      "workload_impact": "LOW",
+      "attestation_type": "NONE",
+      "current_offline_dependency": "unknown",
+      "available_evidence_ids": [
+        "scenario:L05:status",
+        "scenario:L05:rebuild",
+        "scenario:L05:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    },
+    {
+      "id": "L06",
+      "artifact_kind": "puppeteer",
+      "machine_safety_state": "REVIEW",
+      "evidence_level": "E3_SYNTHETIC",
+      "publisher_reference": "https://pptr.dev/guides/installation",
+      "fixture_method": "verified_reinstall_fixture",
+      "exact_identity_verified": true,
+      "exact_target_unused": true,
+      "download_recovery_verified": true,
+      "offline_dependency_excluded": true,
+      "workload_impact": "LOW",
+      "attestation_type": "SYNTHETIC_ASSUMED_INDEPENDENT_CHECKS_NOT_REAL_MAC",
+      "current_offline_dependency": "no",
+      "available_evidence_ids": [
+        "scenario:L06:status",
+        "scenario:L06:rebuild",
+        "scenario:L06:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    },
+    {
+      "id": "L07",
+      "artifact_kind": "playwright",
+      "machine_safety_state": "PROTECTED",
+      "evidence_level": "E3_SYNTHETIC",
+      "publisher_reference": "https://playwright.dev/docs/browsers",
+      "fixture_method": "verified_unused_client_fixture",
+      "exact_identity_verified": true,
+      "exact_target_unused": true,
+      "download_recovery_verified": true,
+      "offline_dependency_excluded": true,
+      "workload_impact": "LOW",
+      "attestation_type": "SYNTHETIC_ASSUMED_INDEPENDENT_CHECKS_NOT_REAL_MAC",
+      "current_offline_dependency": "no",
+      "available_evidence_ids": [
+        "scenario:L07:status",
+        "scenario:L07:rebuild",
+        "scenario:L07:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    },
+    {
+      "id": "L08",
+      "artifact_kind": "playwright",
+      "machine_safety_state": "REVIEW",
+      "evidence_level": "E3_SYNTHETIC",
+      "publisher_reference": "https://playwright.dev/docs/browsers",
+      "fixture_method": "verified_native_gc_fixture",
+      "exact_identity_verified": true,
+      "exact_target_unused": true,
+      "download_recovery_verified": true,
+      "offline_dependency_excluded": true,
+      "workload_impact": "LOW",
+      "attestation_type": "SYNTHETIC_ASSUMED_INDEPENDENT_CHECKS_NOT_REAL_MAC",
+      "current_offline_dependency": "no",
+      "available_evidence_ids": [
+        "scenario:L08:status",
+        "scenario:L08:rebuild",
+        "scenario:L08:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    },
+    {
+      "id": "L09",
+      "artifact_kind": "profile_cachestorage",
+      "machine_safety_state": "REVIEW",
+      "evidence_level": "E0",
+      "publisher_reference": null,
+      "fixture_method": "none",
+      "exact_identity_verified": false,
+      "exact_target_unused": false,
+      "download_recovery_verified": false,
+      "offline_dependency_excluded": false,
+      "workload_impact": "UNKNOWN",
+      "attestation_type": "NONE",
+      "current_offline_dependency": "unknown",
+      "available_evidence_ids": [
+        "scenario:L09:status",
+        "scenario:L09:rebuild",
+        "scenario:L09:usage"
+      ],
+      "scenario_notice": "Counterfactual input invented for decision research; no facts about user's Mac"
+    }
+  ]
+}
