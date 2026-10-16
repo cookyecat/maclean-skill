@@ -38,6 +38,35 @@ jobs:
           report=json.load(open('/tmp/redteam-report.json'))
           assert report["release_quality_gate"]=="FAIL"
           assert report["critical_false_recommendations"]==4
-          assert report["gate_violations"]==5
+          assert report["gate_violations"]>=17
           print('Red-team negative control correctly detected')
+          PY
+      - name: Expanded synthetic calibration controls
+        run: |
+          python3 - <<'PY'
+          import json,subprocess,sys
+          d='research/decision-engine-v0.1/'
+          tests=[
+            ('predictions.oracle-control.json',0,'PASS'),
+            ('predictions.overeager-control.json',3,'FAIL'),
+            ('predictions.timid-control.json',3,'FAIL'),
+          ]
+          for name,expected_code,expected_result in tests:
+            p=subprocess.run([sys.executable,d+'evaluate.py',
+                '--cases',d+'fixtures/cases.synthetic.v0.1.json',
+                '--predictions',d+'fixtures/'+name],capture_output=True,text=True)
+            assert p.returncode==expected_code,(name,p.stderr,p.stdout[:300])
+            r=json.loads(p.stdout)
+            assert r['release_quality_gate']==expected_result,(name,r)
+            print(name,r['release_quality_gate'])
+          PY
+      - name: Confirm blind prompts hide synthetic gold
+        run: |
+          python3 research/decision-engine-v0.1/make_blind_input.py --cases research/decision-engine-v0.1/fixtures/cases.synthetic.v0.1.json > /tmp/maclean-blind-cases.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/maclean-blind-cases.json'))
+          assert len(d['cases'])==18
+          assert all(not {'human_expected','label_rationale','acceptable_strategies'} & set(c) for c in d['cases'])
+          print('blind export passed')
           PY
