@@ -18,8 +18,8 @@ PUBLISHER_CATALOG: dict[str, dict[str, Any]] = {
     "puppeteer": {
         "url": "https://pptr.dev/guides/installation",
         "claim": "Browser download and browser reinstall documented",
-        "operations": ["BROWSER_REINSTALL"],
-        "important_limit": "No proven client-version mapping or current-user dependency; download may be blocked",
+        "operations": ["BROWSER_REINSTALL", "BROWSER_CLEAR_ALL"],
+        "important_limit": "Browser clear is broad; no proven exact-version usage, current-user dependency or re-download availability",
     },
     "playwright": {
         "url": "https://playwright.dev/docs/browsers",
