@@ -1,4 +1,4 @@
-# Privacy-first technical classification — v1.3.1
+# Privacy-first technical classification — v1.4.0
 
 AI decides which candidate is worth reclaiming, based on the actual size, rebuild/re-download costs, workflow dependencies, data loss risk and user intent. Script classification REVIEW is evidence for AI inspection, not approval or a deletion decision.
 

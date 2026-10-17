@@ -1,4 +1,4 @@
-# AI-reviewed technical cleanup scopes — v1.3.1
+# AI-reviewed technical cleanup scopes — v1.4.0
 
 The plan executor is an intentionally restricted tool, not a generic filesystem cleaner. Each path needs explicit user approval **and** physical-terminal `DELETE`. Any other type/path is report-only.
 
@@ -45,5 +45,12 @@ v1 `~/Library/...` classes still work: `cache`, `log`, `updater`, `downloaded_ru
 
 For PID listings, redact `--api-key`, access tokens and environment files before showing user. Use the command path to identify whether a daemon or npx hash is live; mere PPID 1 is not proof of safe termination. Always preserve running Cursor Agent Workers, even when editor is closed.
 
-## Community v1.3.1 AI-reviewed explicit cache targets
+## Community v1.4.0 AI-reviewed explicit cache targets
 Schema v3 optionally supports `kind: agent_reviewed_cache` for an explicitly user-selected `~/Library/Caches/<specific-app>` leaf. AI must provide `ai_analysis` (why re-creatable, what risks) and `conditions` (app shutdown, dependencies, offline concerns). This never grants consent: `user_approved` and TTY `DELETE` remain separate. A hard privacy veto still applies to personal data irrespective of the AI review. No default scanning of arbitrary Library/Caches subtrees.
+
+## v1.4 app catalog candidates
+New kinds: app_cache, app_log, app_update, profile_cache.
+Every such target must match an exact catalog entry and use its required process
+guard. Profile CacheStorage may affect offline application data; AI must assess
+reconstructability before any proposed plan. The user can review/approve one
+AI-proposed batch of exact targets, with a separate physical TTY confirmation.
