@@ -1,6 +1,6 @@
 # MacLean — Privacy-First macOS Disk Auditing (AI-Guided)
 
-**Public source release · v1.3.1 · MIT License**
+**Source tree · v1.4.0 · Latest prebuilt ZIP · v1.3.1 · MIT License**
 
 macOS Disk Auditor is a reusable agent Skill for identifying *technical cache and build artifacts* that might be worth reclaiming. It measures a deliberately narrow set of paths and gives the assistant evidence for analysis. **The AI assesses reclaim value and risk; scripts do not decide what should be deleted.** A separate executor enforces technical safety checks and requires explicit, per-target human approval for any real deletion.
 
@@ -23,8 +23,8 @@ macOS Disk Auditor is a reusable agent Skill for identifying *technical cache an
 
 ## Quick start
 
-1. Obtain the release ZIP from a publisher/source you trust; verify its published SHA-256 (see `artifacts/SHA256SUMS.txt`). Do not infer source authenticity from an internal manifest alone.
-2. Upload `macos-disk-auditor-v1.3.1.zip` as a Skill in your compatible ChatGPT environment, or unpack it into an applicable Skills directory. Start a new session and verify the loaded Skill title is **v1.3.1**.
+1. **v1.4.0 source:** review the exact files in [`skill/macos-disk-auditor/`](skill/macos-disk-auditor/), obtain the complete directory from a trusted repository checkout, then run its bundled `python3 scripts/verify_bundle.py --json`. Package it into a Skill only through an installation workflow you trust. The internal manifest checks integrity, not publisher authenticity.
+2. **Historical prebuilt ZIP:** `artifacts/macos-disk-auditor-v1.3.1.zip` is still available and hash-verifiable via [`SHA256SUMS.txt`](artifacts/SHA256SUMS.txt), but it installs **v1.3.1, not v1.4.0**. No v1.4.0 ZIP has been published in this source-only update.
 3. Authorize a Mac connector **separately**. Installing a Skill does not authorize filesystem access or execute a Mac script.
 4. Ask for a read-only Privacy Safe audit first, including manifest verification, and **prohibit any real cleanup**.
 5. Review the anonymous candidate summary; ask the AI for reasons and conditions before requesting any precise-path preview.
@@ -32,6 +32,8 @@ macOS Disk Auditor is a reusable agent Skill for identifying *technical cache an
 For the manual extraction workflow and safe commands, read [INSTALLATION.md](docs/INSTALLATION.md). For a copyable acceptance prompt, see [VALIDATION.md](docs/VALIDATION.md).
 
 ## Verified baseline (one environment, not a certification)
+
+The unchanged v1.4.0 source bundle passed its 17-file internal manifest verification and **67/67** temporary-HOME self-tests on an authorized Mac on 2026-10-17. This is source and fixture verification, not new full G0–G7 publication acceptance or permission for real cleanup.
 
 The original unchanged v1.3.0 package passed G0–G7 on an authorized Mac mini with macOS **26.5.2** and Python **3.14.7** on **2026-10-16**: 17/17 hashed files, 53/53 on-device isolation checks, 20/20 Home-policy targets and 4/4 Library-policy targets measured, three original audit scopes executed, and no real user deletion. See the privacy-sanitized [acceptance summary](docs/ACCEPTANCE-SUMMARY.md). Other macOS releases, Python versions, Macs and connectors **have not yet received equivalent published evidence**.
 
@@ -45,10 +47,10 @@ More: [AI ↔ executor contract](docs/AI-EXECUTOR-CONTRACT.md), [privacy policy]
 
 ## Release status and licensing
 
-**Public source code under the [MIT License](LICENSE), copyright (c) 2026 cookyecat.** The Skill source and installation ZIP here match the newly rebuilt v1.3.1 archive; v1.3.0 was the separately tested G0–G7 baseline. This is a published source repository, not a claim of universal compatibility or a promise of safe deletion on every Mac.
+**Public source code under the [MIT License](LICENSE), copyright (c) 2026 cookyecat.** The current Skill **source is v1.4.0**; the existing published ZIP archives remain **v1.3.0 and v1.3.1** and are checked separately. v1.3.0 was the separately tested G0–G7 baseline. See [v1.4.0 source sync notes](docs/RELEASE-NOTES-v1.4.0.md). This is a published source repository, not a claim of universal compatibility or a promise of safe deletion on every Mac.
 
 
 
 Read [中文说明](README.zh-CN.md) · [Contributing](CONTRIBUTING.md) · [Report security vulnerabilities](SECURITY.md)
 
-**v1.3.1 fixes [Issue #1](https://github.com/cookyecat/maclean-skill/issues/1).** Test the freshly installed v1.3.1 Skill independently; v1.3.0 acceptance is historical.
+**Historical v1.3.1** fixes [Issue #1](https://github.com/cookyecat/maclean-skill/issues/1). If installing that ZIP, independently verify the installed version is v1.3.1; it is not the new v1.4.0 source.
