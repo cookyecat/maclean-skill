@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import sys
 import time
-from privacy_policy import POLICY_ID, EXCLUDED_CLASSES, PolicyDenied, authorize_scan, discover, public_id
+from privacy_policy import POLICY_ID, EXCLUDED_CLASSES, PolicyDenied, authorize_scan, discover, public_id, app_catalog_entry
 
 
 def measure_one(path, timeout):
@@ -81,6 +81,8 @@ def main():
         item = {'id': public_id(kind, idx), 'kind': kind, 'measurement':
                 'UNKNOWN_ERROR' if error else 'MEASURED', 'size_kib': kib,
                 'size_mib': round(kib/1024, 1) if kib is not None else None}
+        meta=app_catalog_entry(path.relative_to(home).as_posix())
+        if meta: item.update({'app':meta['app'],'rebuild_risk':meta['risk']})
         if a.details:
             item['path'] = '~/' + path.relative_to(home).as_posix()
         candidates.append(item)

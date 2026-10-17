@@ -352,14 +352,14 @@ def main():
         # v1.2 execution integrity and real bundled-script runner checks.
         verifier = execute(home, "verify_bundle.py", ["--json"])
         valid = json.loads(verifier.stdout)
-        check(verifier.returncode == 0 and valid["ok"] and valid["version"] == "1.3.1",
-              "Installed v1.3.1 manifest validates shipped scripts")
+        check(verifier.returncode == 0 and valid["ok"] and valid["version"] == "1.4.0",
+              "Installed v1.4.0 manifest validates shipped scripts")
         check(valid["checked"] == valid["expected_files"] and valid["checked"] >= 12,
               "Manifest covers all shipped executable sources/references")
         check(valid["declared_versions"] == {
-                  "SKILL.md": "1.3.1",
-                  "README_zh.md": "1.3.1",
-                  "references/execution-contract.md": "1.3.1"},
+                  "SKILL.md": "1.4.0",
+                  "README_zh.md": "1.4.0",
+                  "references/execution-contract.md": "1.4.0"},
               "All release headings match manifest; historical version mentions are ignored")
 
         # Corrupt one file inside a completely separate copy; never change the real package.
@@ -378,7 +378,7 @@ def main():
         # semantic release declaration check must still detect the mismatch.
         tampered.write_bytes((BASE / "triage_home.py").read_bytes())
         cloned_skill = cloned / "SKILL.md"
-        original_title = "# macOS Disk Auditor & Safe Cleanup — v1.3.1"
+        original_title = "# macOS Disk Auditor & Safe Cleanup — v1.4.0"
         assert original_title in cloned_skill.read_text()
         cloned_skill.write_text(cloned_skill.read_text().replace(
             original_title, "# macOS Disk Auditor & Safe Cleanup — v1.2.2", 1))
@@ -398,7 +398,7 @@ def main():
         receipt = json.loads(runner.stdout)
         audit_report = json.loads(Path(receipt["report_path"]).read_text())
         check(runner.returncode == 0 and audit_report["status"] == "ok" and
-              audit_report["version"] == "1.3.1" and
+              audit_report["version"] == "1.4.0" and
               audit_report["executed_script"] == "scripts/audit_disk.py" and
               audit_report["result"]["root_total_skipped"] is True,
               "Audit session runs original audit_disk.py and checkpoints verified scope")
@@ -420,6 +420,81 @@ def main():
               "Invalid audit scope is rejected rather than simulated")
         check(db.read_text() == "MUST KEEP" and secret.read_text() == "history",
               "Acceptance runner and tampering test never change real protected fixture")
+        # Expanded catalog tests: synthetic HOME only, no real personal profiles.
+        from privacy_policy import discover, authorize_scan, PolicyDenied, app_catalog_entry
+        steam = home / 'Library/Application Support/Steam/appcache'
+        make_file(steam/'synthetic-cache-file')
+        lark = home / ('Library/Application Support/LarkShell/aha/users/'
+                       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/profile_explorer/'
+                       'Service Worker/CacheStorage')
+        make_file(lark/'fixture')
+        chrome = home / ('Library/Application Support/Google/Chrome/Default/'
+                         'Service Worker/CacheStorage')
+        make_file(chrome/'fixture')
+        updater = home / ('Library/Application Support/Xmind/Electron v3/vana/auto-updater/'
+                          'Xmind-darwin-universal-202605240138.zip')
+        make_file(updater,'synthetic')
+        secret = home / 'Library/Application Support/Google/Chrome/Default/History'
+        make_file(secret,'SHOULD NEVER BE SCANNED')
+        lark_local = home / ('Library/Application Support/LarkShell/aha/users/'
+                             'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/Local Storage')
+        make_file(lark_local/'private.bin','KEEP PRIVATE')
+        seen = {p.relative_to(home).as_posix() for p,k,g in discover(home,'library')}
+        check(steam.relative_to(home).as_posix() in seen,
+              'Steam catalog appcache leaf discoverable')
+        check(lark.relative_to(home).as_posix() in seen,
+              'Feishu exact Service Worker CacheStorage discoverable')
+        check(chrome.relative_to(home).as_posix() in seen,
+              'Chrome exact Service Worker CacheStorage discoverable')
+        check(updater.relative_to(home).as_posix() in seen,
+              'Xmind dated update ZIP discoverable')
+        check(secret.relative_to(home).as_posix() not in seen
+              and lark_local.relative_to(home).as_posix() not in seen,
+              'No other personal profile entries discovered')
+        check(app_catalog_entry(lark.relative_to(home).as_posix())['risk']
+              == 'offline_collaboration_risk',
+              'Feishu offline risk is reported for AI decision')
+        safe = target('~/' + lark.relative_to(home).as_posix(),'profile_cache',['Feishu'])
+        plan=plan_file(home,[safe],False,schema=3)
+        preview=execute(home,'cleanup_plan.py',['--plan',str(plan)])
+        check(preview.returncode == 0 and lark.exists() and 'PREVIEW ONLY' in preview.stdout,
+              'Feishu exact cache plan supports dry-run without deletion')
+        denied=execute(home,'cleanup_plan.py',['--plan',str(plan_file(
+             home,[target('~/' + lark.relative_to(home).as_posix(),'profile_cache',['Chrome'])],
+             True,schema=3))])
+        check(denied.returncode != 0 and lark.exists(),
+              'Feishu cache demands exact matching process guard')
+        denied=execute(home,'cleanup_plan.py',['--plan',str(plan_file(
+             home,[target('~/' + secret.relative_to(home).as_posix(),'cache',['Chrome'])],
+             True,schema=3))])
+        check(denied.returncode != 0 and secret.read_text()=='SHOULD NEVER BE SCANNED',
+              'Browser history hard protected regardless of approval')
+        denied=execute(home,'cleanup_plan.py',['--plan',str(plan_file(
+             home,[target('~/' + lark_local.relative_to(home).as_posix(),'cache',['Feishu'])],
+             True,schema=3))])
+        check(denied.returncode != 0 and (lark_local/'private.bin').read_text()=='KEEP PRIVATE',
+              'Feishu Local Storage hard protected regardless of approval')
+        blocked=False
+        try: authorize_scan(home, secret)
+        except PolicyDenied: blocked=True
+        check(blocked,'Profile history scan denied even with broadened catalog')
+        lark_alias=home/'Library/Caches/feishu-alias'
+        lark_alias.symlink_to(lark,target_is_directory=True)
+        blocked=False
+        try: authorize_scan(home,lark_alias)
+        except PolicyDenied: blocked=True
+        check(blocked,'Symlink alias cannot bypass catalog privacy boundary')
+        m=execute(home,'audit_disk.py',['--root',str(home/'Library'),'--scope','library','--json'])
+        j=json.loads(m.stdout)
+        check(m.returncode==0 and all('path' not in x for x in j['candidates'])
+              and all('id' in x for x in j['candidates']),
+              'Expanded default audit hides Feishu identifiers and target paths')
+        unknown_profile=home/'Library/Application Support/OtherApp/Profile/Cache'
+        make_file(unknown_profile/'fixture')
+        bad=target('~/' + unknown_profile.relative_to(home).as_posix(),'cache',['Chrome'])
+        refused=execute(home,'cleanup_plan.py',['--plan',str(plan_file(home,[bad],True))])
+        check(refused.returncode != 0 and (unknown_profile/'fixture').exists(),
+              'Generic cache-name cannot bypass personal profile protection')
         print(f"ALL {TESTS} TESTS PASSED; sandbox was temporary HOME only")
 
 

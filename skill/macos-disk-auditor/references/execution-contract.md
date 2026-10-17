@@ -1,4 +1,4 @@
-# Mandatory genuine Skill acceptance contract — v1.3.1
+# Mandatory genuine Skill acceptance contract — v1.4.0
 
 The executing agent MUST distinguish: (a) installed source loaded, (b) original files transported byte-identically, (c) original scripts executed on authorized Mac, (d) AI interpreted evidence, and (e) privacy boundary enforced.
 

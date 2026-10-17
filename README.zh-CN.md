@@ -1,6 +1,6 @@
 # MacLean — 隐私优先、AI 决策的 macOS 磁盘审计 Skill
 
-**已公开源代码｜v1.3.1｜MIT 许可证**
+**当前源码 v1.4.0｜历史安装 ZIP 最新 v1.3.1｜MIT 许可证**
 
 它帮助 AI 识别值得进一步讨论的**技术缓存与构建产物**，不以“找到大文件就删除”为目标。
 
@@ -17,19 +17,21 @@
 
 ## 使用流程
 
-1. 从可信来源取得 ZIP，并比对 [SHA-256](artifacts/SHA256SUMS.txt)。
-2. 将原始 `macos-disk-auditor-v1.3.1.zip` 导入支持 Skills 的环境；新会话核对版本。安装 Skill **并不自动授权访问 Mac**。
+1. **v1.4.0 源码**：从可信仓库检出完整的 [`skill/macos-disk-auditor/`](skill/macos-disk-auditor/) 目录，检查其中的 `SKILL.md`，使用原版 `scripts/verify_bundle.py --json` 验证清单后，按兼容平台支持的方式安装；内部 manifest 不能独自证明发布者身份。
+2. **历史 ZIP**：仓库现有的 `macos-disk-auditor-v1.3.1.zip` 仍可通过 [SHA-256](artifacts/SHA256SUMS.txt) 校验，但安装的是 **v1.3.1，不是 v1.4.0**。本次仅同步新版源码，没有声称发布 v1.4.0 ZIP。安装 Skill **并不自动授权访问 Mac**。
 3. 通过已独立授权的 Mac 连接器执行原版 `verify_bundle.py` 和只读审计，先不要申请实际清理。
 4. AI 结合测量值、进程保护、可再生性、离线需求与风险进行分析。
 5. 用户决定是否继续了解精确路径、查看计划或批准清理。`--plan` 默认仅预览，绝不执行删除；`--apply` 需要**新的、明确的逐项批准**及本机交互终端输入 `DELETE`，社区验收禁止使用。
 
 ## 验收证据与限制
 
+v1.4.0 原版源码在 2026-10-17 经一台授权 Mac 完成 17 文件 manifest 校验和 **67/67 项临时 HOME 夹具自测**，没有清理用户真实缓存；该证据不等同于新版本完整 G0–G7 发布验收。
+
 v1.3.0 于 2026-10-16 在**一台** Mac mini（macOS 26.5.2，Python 3.14.7）通过 G0–G7：manifest 17/17、自测 53/53、Home 策略内 20/20、Library 策略内 4/4。未执行真实文件清理，不能据此宣称适配所有 macOS / 连接器。
 
 ## 社区发布状态
 
-**本项目已按 [MIT](LICENSE) 许可证开源**，版权声明为 2026 cookyecat。仓库内 Skill 源码、manifest 和安装 ZIP 与重新打包的 v1.3.1 版本一致；原 G0–G7 验收适用于历史 v1.3.0。
+**本项目已按 [MIT](LICENSE) 许可证开源**，版权声明为 2026 cookyecat。仓库内 Skill 源码与 manifest 已更新为 v1.4.0；历史 v1.3.0／v1.3.1 安装 ZIP 及各自校验和保持不变，分别进行完整性检查。原 G0–G7 验收适用于历史 v1.3.0。见 [v1.4.0 源码同步说明](docs/RELEASE-NOTES-v1.4.0.md)。
 
 
 - [安装与运行](docs/INSTALLATION.md)

@@ -1,6 +1,19 @@
-# Installation and safe first run — community draft v1.3.1
+# Installation and safe first run — v1.4.0 source / v1.3.1 historical ZIP
 
-> **v1.3.1 fixes embedded installation and transport references.** Verify the actual installed Skill version. Historical v1.3.0 G0–G7 evidence does not certify newly changed v1.3.1 bytes.
+> **v1.4.0 is currently a source-only sync.** The packaged ZIP retained in `artifacts/` is v1.3.1; installing it does NOT install v1.4.0. The historical v1.3.0 G0–G7 result is not a universal certification of later versions.
+
+## Install from verified v1.4.0 source
+
+Obtain a trusted full repository checkout, inspect [`skill/macos-disk-auditor/`](../skill/macos-disk-auditor/) and use that exact directory when installing a Skill from source in an environment that supports it:
+
+```sh
+cd skill/macos-disk-auditor
+python3 scripts/verify_bundle.py --json
+```
+
+Confirm `ok=true`, `version=1.4.0`, and the source provenance independently. Installing the Skill does not authorize Mac access, and verifying a manifest is not authorization to delete files. **No v1.4.0 installation ZIP is included in this source update.**
+
+## Historical v1.3.1 ZIP installation
 
 ## ChatGPT with an authorized Mac connector
 

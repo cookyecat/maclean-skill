@@ -15,9 +15,9 @@ import shutil
 import stat
 import subprocess
 import sys
-from privacy_policy import protected_cleanup_target, PolicyDenied
+from privacy_policy import protected_cleanup_target, PolicyDenied, app_catalog_entry
 
-LIBRARY_KINDS = {"cache", "log", "updater", "downloaded_runtime", "preload", "old_version", "agent_reviewed_cache"}
+LIBRARY_KINDS = {"cache", "log", "updater", "downloaded_runtime", "preload", "old_version", "agent_reviewed_cache", "app_cache", "app_log", "app_update", "profile_cache"}
 HOME_KINDS = {"npm_cache", "npx_install", "uv_cache", "puppeteer_cache",
               "codex_runtime_installer", "codex_daemon_old", "cargo_target"}
 KINDS = LIBRARY_KINDS | HOME_KINDS
@@ -126,6 +126,12 @@ def validate_library(kind, path, parts, guards):
         # only enforces technical guardrails, NOT algorithmic reclaimability.
         if len(parts) != 3 or parts[:2] != ["Library", "Caches"] or not name or name in BAD_BASENAMES:
             reject("AI-reviewed cache must be one exact Library/Caches/<app> leaf")
+    if kind in ('app_cache','app_log','app_update','profile_cache'):
+        meta=app_catalog_entry('/'.join(parts))
+        if meta is None or meta['kind'] != kind:
+            reject('Application cleanup target must match exact catalog entry')
+        if meta['guard'] not in guards:
+            reject('Missing catalog app activity guard')
     if kind == "old_version":
         prefix = ["Library", "Application Support", "Cursor", "User", "globalStorage",
                   "anysphere.cursor-agent-worker", "agent-cli", ".local", "share", "cursor-agent", "versions"]

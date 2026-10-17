@@ -14,9 +14,11 @@ No shell approximation of the scanner counts as shipped-Skill execution. Do not 
 
 ## Safe example acceptance request
 
-> Use the installed **macos-disk-auditor v1.3.x Privacy-First** Skill and the separately authorized Mac connector. Read the actual installed `SKILL.md`, version and manifest. Do a genuine G0–G7 check: deploy identical bundle to a private temp directory; verify hashes on Mac; run bundled `self_test.py` only inside its fixture HOME; run original Privacy Safe home/library/triage reports without broad root traversal; independently have the AI assess technical candidates and perform dry-run only with `user_approved=false`; check privacy negative fixtures, symlink refusal and default output redaction. Never visit personal directories, stop an existing service, elevate permissions or run `--apply`. Report each Gate honestly and distinguish observed macOS evidence from untested systems.
+> Use the installed **macos-disk-auditor v1.4.0 source (or clearly identify a historical v1.3.x ZIP)** Privacy-First Skill and the separately authorized Mac connector. Read the actual installed `SKILL.md`, version and manifest. Do a genuine G0–G7 check: deploy identical bundle to a private temp directory; verify hashes on Mac; run bundled `self_test.py` only inside its fixture HOME; run original Privacy Safe home/library/triage reports without broad root traversal; independently have the AI assess technical candidates and perform dry-run only with `user_approved=false`; check privacy negative fixtures, symlink refusal and default output redaction. Never visit personal directories, stop an existing service, elevate permissions or run `--apply`. Report each Gate honestly and distinguish observed macOS evidence from untested systems.
 
-## Release hash check
+## Historical packaged-release hash check (v1.3.1)
+
+The following ZIP commands verify the **historical v1.3.1 artifact**, not v1.4.0 source. For v1.4.0 source run its bundled `verify_bundle.py --json` and verify repository provenance separately.
 
 Mac:
 
