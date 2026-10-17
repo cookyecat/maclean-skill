@@ -3,29 +3,32 @@ name: macos-disk-auditor
 description: Privacy-first, evidence-backed macOS disk auditing and AI-guided, separately approved cleanup. Default scanner only measures known technical caches, never broad Home or private user data.
 ---
 
-# macOS Disk Auditor & Safe Cleanup — v1.3.1
+# macOS Disk Auditor & Safe Cleanup — v1.4.0
 
 ## Non-negotiable boundaries
 
 **AI makes the judgment.** The assistant determines which technical files could be worth reclaiming, tradeoffs, rebuild costs, conditions and recommendations. The scripts DO NOT algorithmically recommend or approve deletion; they collect limited machine evidence, enforce hard safety/privacy constraints, and execute only separately approved exact plans.
 
-**Privacy before access.** Having Full Disk Access is NOT consent to scan Mail, Messages, CloudDocs, MobileSync, com.apple.TCC, AddressBook, FaceTime, Knowledge, FileProvider, Keychains, browser profiles, other personal content, or whole Home/Library/Developer trees. Do not read, enumerate, or size these paths, even if permitted by macOS. Never perform an ad-hoc `du -sh ~`, `du -sk ~/Library`, `find ~`, or exhaustive filesystem scan as a workaround. No network upload or telemetry by the scripts.
+**Privacy before access.** Having Full Disk Access is NOT consent to scan Mail, Messages, CloudDocs, MobileSync, com.apple.TCC, AddressBook, FaceTime, Knowledge, FileProvider, Keychains, browser history, credentials and non-cataloged profile data, other personal content, or whole Home/Library/Developer trees. Do not read, enumerate, or size these paths, even if permitted by macOS. Never perform an ad-hoc `du -sh ~`, `du -sk ~/Library`, `find ~`, or exhaustive filesystem scan as a workaround. No network upload or telemetry by the scripts.
 
 **Mutation** is always separate. AI proposes an evidence-backed exact-path plan; user expressly approves each target; executor checks immutable safety/privacy restrictions, process activity, symlink and inode changes and demands *physical* TTY `DELETE` for `--apply`. This does NOT transfer the AI's selection judgment to fixed heuristics. The helper's safety veto is not a cleanup recommendation. NEVER run real `--apply` in an audit/acceptance run.
 
 ## Scan profiles and consent
 
-- Default **Privacy Safe**: `--scope home` measures only precise recognized technical leaves under npm, uv, Puppeteer, Codex caches/releases; `--scope library` checks only specifically recognized technical runtime leaves such as `~/Library/Caches/ms-playwright` and individual Cursor Agent versions. Both scopes explicitly **do not** measure Home/Library total, enumerate Documents or recurse on parents. No fallback broad `du`.
+- Default **Privacy Safe**: `--scope home` measures only precise recognized technical leaves under npm, uv, Puppeteer, Codex caches/releases; `--scope library` checks only specifically recognized technical runtime leaves such as `~/Library/Caches/ms-playwright` and individual Cursor Agent versions and precisely cataloged app caches, logs, update archives. Both scopes explicitly **do not** measure Home/Library total, enumerate Documents or recurse on parents. No fallback broad `du`.
 - `--scope triage`: collects machine observations and fail-closed blockers about permitted technical leaves, with `ai_assessment=REQUIRED`, `user_approved=false`; results ARE NOT deletion advice.
 - **Developer Scoped**, only when user names the project: `--scope developer --project-root <authorized-project>` examines only that selected project's `target/` Cargo build output. It does not read source contents, inspect unrelated projects or scan the project parent. Project scope must be inside developer/worktree locations.
-- **User-Selected App Cache**, only with separate user authorization: `--scope path --root "$HOME/Library/Caches/<specific-app>" --user-selected-cache`. Without the flag, an unrecognized cache scope is denied. No personal-profile directories. AI decides whether such a cache is genuinely disposable.
+- **User-Selected App Cache**, only with separate user authorization: `--scope path --root "$HOME/Library/Caches/<specific-app>" --user-selected-cache`. Without the flag, an unrecognized cache scope is denied. Chrome Default and Feishu Service Worker CacheStorage are separately cataloged
+exceptions for default leaf-only measurement. They can support offline data;
+they must never be blindly selected for deletion. Other profile data remains protected.
+AI decides whether any cache is genuinely disposable.
 - `--details` is a separate, explicitly approved **local-only** detailed report setting. Default reports must omit actual usernames, hostname, exact paths, PID details and raw process commands.
 
 ## G0–G7 real acceptance gates
 
 | Gate | Mandatory proof |
 |---|---|
-| G0 release | Read current installed `SKILL.md`, execution contract and manifest. Version from authoritative first titles must match 1.3.1; historical mentions not current version. If resource and installed bytes conflict, show both exact SHA-256 rather than pretend PASS. |
+| G0 release | Read current installed `SKILL.md`, execution contract and manifest. Version from authoritative first titles must match 1.4.0; historical mentions not current version. If resource and installed bytes conflict, show both exact SHA-256 rather than pretend PASS. |
 | G1 connection | Authorized connector reaches actual Mac, ordinary user, process context. |
 | G2 original deployment | Original installed source bytes staged in independently authorized temporary directory on Mac. No assistant rewrite substituted. |
 | G3 integrity | Run original `scripts/verify_bundle.py --json` ON Mac, all manifest hashes and declared versions match. |
@@ -63,6 +66,6 @@ python3 scripts/audit_session.py --scope triage --output-dir "$REPORT_DIR" --tim
 
 ## File manifest & maintained safety behavior
 
-`verify_bundle.py` hashes all shipped reference/scripts. v1.3.1 extends scan privacy and report security while keeping earlier fail-closed controls: cancellation, unapproved plans, TTY gate, active npm/Codex/Cursor checks, current/fallback versions, clean Git/Cargo target checks, PTY EOF and macOS `/var` alias regression.
+`verify_bundle.py` hashes all shipped reference/scripts. v1.4.0 extends scan privacy and report security while keeping earlier fail-closed controls: cancellation, unapproved plans, TTY gate, active npm/Codex/Cursor checks, current/fallback versions, clean Git/Cargo target checks, PTY EOF and macOS `/var` alias regression.
 
 For transport/permission failures use an independently authorized connector only, otherwise stop and report. Never fabricate verification evidence. No real cleanup is authorized by requesting a dry-run or acceptance test.
